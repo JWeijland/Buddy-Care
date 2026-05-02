@@ -1,17 +1,15 @@
-//
-//  Buddie_CareApp.swift
-//  Buddie Care
-//
-//  Created by Jelle Weijland on 02/05/2026.
-//
-
 import SwiftUI
 
 @main
 struct Buddie_CareApp: App {
+    @State private var appState = AppState()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
+                .environment(appState)
+                .preferredColorScheme(.light)
+                // COMPLIANCE: AVG art. 13 — privacy notice must be shown at onboarding
         }
     }
 }

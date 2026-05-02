@@ -1,24 +1,10 @@
-//
-//  ContentView.swift
-//  Buddie Care
-//
-//  Created by Jelle Weijland on 02/05/2026.
-//
-
 import SwiftUI
 
+// Replaced by RootView. Kept here as a thin alias so any stray references compile.
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
+    var body: some View { RootView() }
 }
 
 #Preview {
-    ContentView()
+    ContentView().environment(AppState())
 }
