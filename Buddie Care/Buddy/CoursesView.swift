@@ -3,53 +3,124 @@ import SwiftUI
 struct CoursesView: View {
     @Environment(AppState.self) private var appState
     @State private var selectedCourse: Course? = nil
+    @State private var celebrationLevel: ServiceLevel? = nil
+    @State private var celebrationParticles: [CelebrationParticle] = []
+    @State private var prevCompletedLevels: Set<ServiceLevel> = []
 
     var body: some View {
-        VStack(spacing: 0) {
-            BCNavBar(title: "Cursussen", subtitle: "Groei naar het volgende niveau")
+        ZStack {
+            VStack(spacing: 0) {
+                BCNavBar(title: "Cursussen", subtitle: "Groei naar het volgende niveau")
 
-            ScrollView {
-                VStack(spacing: BCSpacing.md) {
-                    levelHeader
-                        .padding(.horizontal, BCSpacing.lg)
-                        .padding(.top, BCSpacing.md)
+                ScrollView {
+                    VStack(spacing: BCSpacing.md) {
+                        levelHeader
+                            .padding(.horizontal, BCSpacing.lg)
+                            .padding(.top, BCSpacing.md)
 
-                    ForEach(ServiceLevel.allCases.prefix(4)) { level in
-                        let coursesForLevel = appliedCourses.filter { $0.level == level }
-                        if !coursesForLevel.isEmpty {
-                            VStack(alignment: .leading, spacing: BCSpacing.sm) {
-                                HStack {
-                                    BCLevelBadge(level: level)
-                                    Text(level.title)
-                                        .font(BCTypography.headline)
-                                        .foregroundStyle(BCColors.textPrimary)
-                                    Spacer()
-                                }
-                                Text(level.requirementText)
-                                    .font(BCTypography.caption)
-                                    .foregroundStyle(BCColors.textTertiary)
+                        ForEach(ServiceLevel.allCases.prefix(4)) { level in
+                            let coursesForLevel = appliedCourses.filter { $0.level == level }
+                            if !coursesForLevel.isEmpty {
+                                VStack(alignment: .leading, spacing: BCSpacing.sm) {
+                                    HStack {
+                                        BCLevelBadge(level: level)
+                                        Text(level.title)
+                                            .font(BCTypography.headline)
+                                            .foregroundStyle(BCColors.textPrimary)
+                                        Spacer()
+                                        if completedLevels.contains(level) {
+                                            Label("Behaald!", systemImage: "checkmark.seal.fill")
+                                                .font(BCTypography.captionEmphasized)
+                                                .foregroundStyle(BCColors.success)
+                                                .transition(.scale.combined(with: .opacity))
+                                        }
+                                    }
+                                    Text(level.requirementText)
+                                        .font(BCTypography.caption)
+                                        .foregroundStyle(BCColors.textTertiary)
 
-                                VStack(spacing: BCSpacing.sm) {
-                                    ForEach(coursesForLevel) { course in
-                                        CourseRow(course: course) {
-                                            if course.unlocked {
-                                                selectedCourse = course
+                                    VStack(spacing: BCSpacing.sm) {
+                                        ForEach(coursesForLevel) { course in
+                                            CourseRow(course: course) {
+                                                if course.unlocked {
+                                                    selectedCourse = course
+                                                }
                                             }
                                         }
                                     }
                                 }
+                                .padding(.horizontal, BCSpacing.lg)
+                                .padding(.top, BCSpacing.sm)
                             }
-                            .padding(.horizontal, BCSpacing.lg)
-                            .padding(.top, BCSpacing.sm)
                         }
+                        Spacer().frame(height: BCSpacing.xl)
                     }
-                    Spacer().frame(height: BCSpacing.xl)
+                }
+            }
+            .background(BCColors.background.ignoresSafeArea())
+
+            if let lvl = celebrationLevel {
+                ConfettiOverlay(particles: celebrationParticles)
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
+
+                VStack {
+                    Spacer()
+                    VStack(spacing: BCSpacing.sm) {
+                        Text("🎉")
+                            .font(.system(size: 48))
+                        Text("Niveau \(lvl.rawValue) behaald!")
+                            .font(BCTypography.titleEmphasized)
+                            .foregroundStyle(BCColors.textPrimary)
+                        Text(lvl.celebrationMessage)
+                            .font(BCTypography.body)
+                            .foregroundStyle(BCColors.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, BCSpacing.xl)
+                    }
+                    .padding(BCSpacing.xl)
+                    .background(
+                        RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous)
+                            .fill(BCColors.surface)
+                            .shadow(color: .black.opacity(0.12), radius: 24, y: 8)
+                    )
+                    .padding(.horizontal, BCSpacing.lg)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    Spacer().frame(height: BCSpacing.xxl)
                 }
             }
         }
-        .background(BCColors.background.ignoresSafeArea())
         .sheet(item: $selectedCourse) { course in
             CourseDetailView(course: course)
+        }
+        .onChange(of: completedLevels) { _, nowDone in
+            let newlyDone = nowDone.subtracting(prevCompletedLevels)
+            prevCompletedLevels = nowDone
+            if let level = newlyDone.sorted(by: { $0.rawValue < $1.rawValue }).first {
+                triggerCelebration(for: level)
+            }
+        }
+        .onAppear {
+            prevCompletedLevels = completedLevels
+        }
+    }
+
+    private var completedLevels: Set<ServiceLevel> {
+        Set(ServiceLevel.allCases.prefix(4).filter { level in
+            let courses = appliedCourses.filter { $0.level == level }
+            return !courses.isEmpty && courses.allSatisfy { $0.progressPercent == 100 }
+        })
+    }
+
+    private func triggerCelebration(for level: ServiceLevel) {
+        celebrationParticles = (0..<60).map { _ in CelebrationParticle() }
+        withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
+            celebrationLevel = level
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+            withAnimation(.easeOut(duration: 0.4)) {
+                celebrationLevel = nil
+            }
         }
     }
 
@@ -351,6 +422,66 @@ struct CourseDetailView: View {
         case .video:   return "play.fill"
         case .quiz:    return "checkmark.circle"
         case .reading: return "book.fill"
+        }
+    }
+}
+
+// MARK: - Confetti
+
+struct CelebrationParticle: Identifiable {
+    let id = UUID()
+    let x: CGFloat = CGFloat.random(in: 0...1)
+    let delay: Double = Double.random(in: 0...0.6)
+    let duration: Double = Double.random(in: 1.8...3.0)
+    let size: CGFloat = CGFloat.random(in: 7...14)
+    let rotation: Double = Double.random(in: 0...360)
+    let rotationSpeed: Double = Double.random(in: 180...540)
+    let color: Color = [
+        BCColors.primary, BCColors.accent, BCColors.success,
+        BCColors.level1, BCColors.level2, Color.yellow, Color.pink
+    ].randomElement()!
+    let shape: Int = Int.random(in: 0...2)
+}
+
+private struct ConfettiOverlay: View {
+    let particles: [CelebrationParticle]
+
+    var body: some View {
+        GeometryReader { geo in
+            ForEach(particles) { p in
+                ConfettiPiece(particle: p, height: geo.size.height)
+                    .position(x: p.x * geo.size.width, y: -20)
+            }
+        }
+    }
+}
+
+private struct ConfettiPiece: View {
+    let particle: CelebrationParticle
+    let height: CGFloat
+    @State private var offset: CGFloat = 0
+    @State private var spin: Double = 0
+
+    var body: some View {
+        Group {
+            if particle.shape == 0 {
+                Circle().fill(particle.color).frame(width: particle.size, height: particle.size)
+            } else if particle.shape == 1 {
+                Rectangle().fill(particle.color).frame(width: particle.size, height: particle.size * 0.6)
+            } else {
+                RoundedRectangle(cornerRadius: 2).fill(particle.color).frame(width: particle.size * 0.5, height: particle.size)
+            }
+        }
+        .rotationEffect(.degrees(particle.rotation + spin))
+        .offset(y: offset)
+        .onAppear {
+            withAnimation(
+                .linear(duration: particle.duration)
+                .delay(particle.delay)
+            ) {
+                offset = height + 60
+                spin = particle.rotationSpeed
+            }
         }
     }
 }

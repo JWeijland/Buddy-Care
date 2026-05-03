@@ -52,6 +52,16 @@ enum ServiceLevel: Int, CaseIterable, Identifiable, Codable {
         case .four: return "BIG-registratie verpleegkundige (V&V niveau 4/5)"
         }
     }
+
+    var celebrationMessage: String {
+        switch self {
+        case .zero: return "Je bent klaar als Basis Buddy. Niveau 1 is nu beschikbaar."
+        case .one: return "Geweldig! Je kunt nu helpen met huishoud- en mobiliteitstaken. Niveau 2 is ontgrendeld."
+        case .two: return "Top! Je bent gecertificeerd voor zorgondersteuning. Niveau 3 staat voor je klaar."
+        case .three: return "Indrukwekkend! Je beheerst volledige ADL-zorg. Niveau 4 is nu toegankelijk."
+        case .four: return "Uitzonderlijk! Je hebt het hoogste niveau bereikt. Gefeliciteerd!"
+        }
+    }
 }
 
 // MARK: - Task category
