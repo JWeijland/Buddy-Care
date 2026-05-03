@@ -2,7 +2,9 @@ import SwiftUI
 
 struct ElderlyProfileView: View {
     @Environment(AppState.self) private var appState
+    @Environment(\.largeTextEnabled) private var largeText
     @State private var notificationsEnabled = true
+    private var et: BCElderlyType { BCElderlyType(large: largeText) }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -20,13 +22,13 @@ struct ElderlyProfileView: View {
                             }
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(appState.elderlyUser.fullName)
-                                    .font(BCTypography.title3)
+                                    .font(et.heading)
                                     .foregroundStyle(BCColors.textPrimary)
                                 Text("\(appState.elderlyUser.age) jaar")
-                                    .font(BCTypography.subheadline)
+                                    .font(et.body)
                                     .foregroundStyle(BCColors.textSecondary)
                                 Text(appState.elderlyUser.address)
-                                    .font(BCTypography.caption)
+                                    .font(et.caption)
                                     .foregroundStyle(BCColors.textTertiary)
                             }
                             Spacer()
@@ -73,7 +75,7 @@ struct ElderlyProfileView: View {
                                 set: { appState.largeTextEnabled = $0 }
                             )) {
                                 Label("Grote letters", systemImage: "textformat.size")
-                                    .font(BCTypography.body)
+                                    .font(et.body)
                                     .foregroundStyle(BCColors.textPrimary)
                             }
                             .tint(BCColors.primary)
@@ -84,10 +86,10 @@ struct ElderlyProfileView: View {
                             )) {
                                 VStack(alignment: .leading, spacing: 1) {
                                     Label("Formeel aanspreken", systemImage: "person.fill")
-                                        .font(BCTypography.body)
+                                        .font(et.body)
                                         .foregroundStyle(BCColors.textPrimary)
                                     Text(appState.prefersFormal ? "Buddies zeggen u" : "Buddies zeggen jij")
-                                        .font(BCTypography.caption)
+                                        .font(et.caption)
                                         .foregroundStyle(BCColors.textTertiary)
                                 }
                             }
@@ -95,7 +97,7 @@ struct ElderlyProfileView: View {
                             Divider()
                             Toggle(isOn: $notificationsEnabled) {
                                 Label("Meldingen", systemImage: "bell.fill")
-                                    .font(BCTypography.body)
+                                    .font(et.body)
                                     .foregroundStyle(BCColors.textPrimary)
                             }
                             .tint(BCColors.primary)

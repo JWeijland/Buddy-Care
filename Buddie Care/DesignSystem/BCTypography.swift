@@ -22,3 +22,31 @@ enum BCTypography {
     static let elderlyCaption = Font.system(size: 17, weight: .regular, design: .rounded)
     static let elderlyButton = Font.system(size: 22, weight: .semibold, design: .rounded)
 }
+
+// MARK: - Elderly large-text scale
+
+struct BCElderlyType {
+    let large: Bool
+    // Normal → Large: each step adds ~6pt
+    var title:   Font { .system(size: large ? 36 : 28, weight: .bold,     design: .rounded) }
+    var heading: Font { .system(size: large ? 30 : 24, weight: .bold,     design: .rounded) }
+    var body:    Font { .system(size: large ? 26 : 20, weight: .regular,  design: .rounded) }
+    var caption: Font { .system(size: large ? 21 : 17, weight: .regular,  design: .rounded) }
+    var button:  Font { .system(size: large ? 28 : 22, weight: .semibold, design: .rounded) }
+    var iconBoxSize: CGFloat { large ? 88 : 72 }
+    var iconSize:    CGFloat { large ? 40 : 32 }
+    var tileHeight:  CGFloat { large ? 148 : 120 }
+}
+
+// MARK: - EnvironmentKey so every elderly view inherits the flag
+
+private struct LargeTextEnabledKey: EnvironmentKey {
+    static let defaultValue: Bool = false
+}
+
+extension EnvironmentValues {
+    var largeTextEnabled: Bool {
+        get { self[LargeTextEnabledKey.self] }
+        set { self[LargeTextEnabledKey.self] = newValue }
+    }
+}

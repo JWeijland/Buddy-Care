@@ -106,16 +106,18 @@ struct BCDangerButton: View {
 
 // Large tappable card for elderly home screen — 120pt+ height, accent strip on left
 struct BCBigTile: View {
+    @Environment(\.largeTextEnabled) private var largeText
     let title: String
     let subtitle: String?
     let icon: String
     var color: Color = BCColors.primary
     let action: () -> Void
 
+    private var et: BCElderlyType { BCElderlyType(large: largeText) }
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: 0) {
-                // Accent strip on left per spec
                 Rectangle()
                     .fill(color)
                     .frame(width: 6)
@@ -126,19 +128,19 @@ struct BCBigTile: View {
                     ZStack {
                         RoundedRectangle(cornerRadius: BCRadius.md, style: .continuous)
                             .fill(color.opacity(0.10))
-                            .frame(width: 72, height: 72)
+                            .frame(width: et.iconBoxSize, height: et.iconBoxSize)
                         Image(systemName: icon)
-                            .font(.system(size: 32, weight: .semibold))
+                            .font(.system(size: et.iconSize, weight: .semibold))
                             .foregroundStyle(color)
                     }
                     VStack(alignment: .leading, spacing: 4) {
                         Text(title)
-                            .font(BCTypography.elderlyButton)
+                            .font(et.button)
                             .foregroundStyle(BCColors.textPrimary)
                             .multilineTextAlignment(.leading)
                         if let subtitle {
                             Text(subtitle)
-                                .font(BCTypography.subheadline)
+                                .font(et.caption)
                                 .foregroundStyle(BCColors.textSecondary)
                                 .multilineTextAlignment(.leading)
                                 .lineLimit(2)
@@ -146,12 +148,12 @@ struct BCBigTile: View {
                     }
                     Spacer(minLength: 0)
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.system(size: largeText ? 20 : 16, weight: .semibold))
                         .foregroundStyle(BCColors.textTertiary)
                 }
-                .padding(BCSpacing.md)
+                .padding(largeText ? BCSpacing.lg : BCSpacing.md)
             }
-            .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
+            .frame(maxWidth: .infinity, minHeight: et.tileHeight, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous)
                     .fill(BCColors.surface)

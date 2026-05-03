@@ -24,6 +24,7 @@ struct ElderlyTabView: View {
                     }
             }
             .tint(BCColors.primary)
+            .environment(\.largeTextEnabled, appState.largeTextEnabled)
         }
         .fullScreenCover(isPresented: Binding(
             get: { appState.showSOS },

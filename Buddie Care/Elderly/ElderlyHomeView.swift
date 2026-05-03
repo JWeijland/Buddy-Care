@@ -2,9 +2,12 @@ import SwiftUI
 
 struct ElderlyHomeView: View {
     @Environment(AppState.self) private var appState
+    @Environment(\.largeTextEnabled) private var largeText
     @State private var showRequestFlow = false
     @State private var showReview = false
     @State private var selectedHistoryTask: ServiceTask? = nil
+
+    private var et: BCElderlyType { BCElderlyType(large: largeText) }
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -19,16 +22,16 @@ struct ElderlyHomeView: View {
                                 .padding(.top, BCSpacing.md)
                         }
 
-                        VStack(alignment: .leading, spacing: BCSpacing.md) {
+                        VStack(alignment: .leading, spacing: largeText ? BCSpacing.lg : BCSpacing.md) {
                             Text("Waar kan ik u mee helpen?")
-                                .font(BCTypography.elderlyHeading)
+                                .font(et.heading)
                                 .foregroundStyle(BCColors.textPrimary)
                                 .padding(.horizontal, BCSpacing.lg)
 
-                            VStack(spacing: BCSpacing.sm) {
+                            VStack(spacing: largeText ? BCSpacing.md : BCSpacing.sm) {
                                 BCBigTile(
                                     title: "Hulp vragen",
-                                    subtitle: "Iemand komt u zo helpen",
+                                    subtitle: largeText ? nil : "Iemand komt u zo helpen",
                                     icon: "hand.raised.fill",
                                     color: BCColors.primary
                                 ) {
@@ -37,19 +40,19 @@ struct ElderlyHomeView: View {
 
                                 BCBigTile(
                                     title: "Mijn vaste buddies",
-                                    subtitle: "Bel of nodig direct uit",
+                                    subtitle: largeText ? nil : "Bel of nodig direct uit",
                                     icon: "person.2.fill",
                                     color: BCColors.accent
-                                ) {
-                                    // Tab switch handled visually
-                                }
-
-                                BCBigTile(
-                                    title: "Bezoek aan de deur",
-                                    subtitle: "Bekijk wie er staat (camera)",
-                                    icon: "video.fill",
-                                    color: BCColors.level1
                                 ) { }
+
+                                if !largeText {
+                                    BCBigTile(
+                                        title: "Bezoek aan de deur",
+                                        subtitle: "Bekijk wie er staat (camera)",
+                                        icon: "video.fill",
+                                        color: BCColors.level1
+                                    ) { }
+                                }
                             }
                             .padding(.horizontal, BCSpacing.lg)
                         }
@@ -95,44 +98,46 @@ struct ElderlyHomeView: View {
     private var upcomingSection: some View {
         VStack(alignment: .leading, spacing: BCSpacing.sm) {
             Text("Eerder geholpen")
-                .font(BCTypography.title3)
+                .font(et.heading)
                 .foregroundStyle(BCColors.textPrimary)
 
             if appState.taskHistory.isEmpty {
                 BCCard {
                     Text("Nog geen eerdere bezoeken.")
-                        .font(BCTypography.body)
+                        .font(et.body)
                         .foregroundStyle(BCColors.textSecondary)
                 }
             } else {
-                ForEach(appState.taskHistory.prefix(5)) { task in
+                let limit = largeText ? 2 : 5
+                ForEach(appState.taskHistory.prefix(limit)) { task in
                     Button { selectedHistoryTask = task } label: {
                         BCCard {
                             HStack(spacing: BCSpacing.md) {
+                                let iconSize: CGFloat = largeText ? 52 : 44
                                 Image(systemName: task.category.icon)
-                                    .font(.system(size: 22, weight: .semibold))
+                                    .font(.system(size: largeText ? 28 : 22, weight: .semibold))
                                     .foregroundStyle(BCColors.primary)
-                                    .frame(width: 44, height: 44)
+                                    .frame(width: iconSize, height: iconSize)
                                     .background(Circle().fill(BCColors.primary.opacity(0.10)))
-                                VStack(alignment: .leading, spacing: 2) {
+                                VStack(alignment: .leading, spacing: largeText ? 5 : 2) {
                                     Text(task.category.displayName)
-                                        .font(BCTypography.headline)
+                                        .font(et.body)
                                         .foregroundStyle(BCColors.textPrimary)
                                     if let buddy = task.assignedBuddyName {
                                         HStack(spacing: BCSpacing.xs) {
                                             Text("Met \(buddy)")
-                                                .font(BCTypography.subheadline)
+                                                .font(et.caption)
                                                 .foregroundStyle(BCColors.textSecondary)
                                             if appState.favoriteBuddyNames.contains(buddy) {
                                                 Image(systemName: "heart.fill")
-                                                    .font(.system(size: 10))
+                                                    .font(.system(size: largeText ? 13 : 10))
                                                     .foregroundStyle(BCColors.danger)
                                             }
                                         }
                                     }
-                                    if let date = task.completedAt {
+                                    if !largeText, let date = task.completedAt {
                                         Text(relativeFormatter.localizedString(for: date, relativeTo: Date()))
-                                            .font(BCTypography.caption)
+                                            .font(et.caption)
                                             .foregroundStyle(BCColors.textTertiary)
                                     }
                                 }
@@ -140,15 +145,15 @@ struct ElderlyHomeView: View {
                                 if let stars = appState.taskRatings[task.id] {
                                     HStack(spacing: 2) {
                                         Image(systemName: "star.fill")
-                                            .font(.system(size: 11))
+                                            .font(.system(size: largeText ? 16 : 11))
                                             .foregroundStyle(BCColors.warning)
                                         Text("\(stars)")
-                                            .font(BCTypography.captionEmphasized)
+                                            .font(et.caption)
                                             .foregroundStyle(BCColors.textSecondary)
                                     }
                                 } else {
                                     Image(systemName: "chevron.right")
-                                        .font(.system(size: 13, weight: .semibold))
+                                        .font(.system(size: largeText ? 18 : 13, weight: .semibold))
                                         .foregroundStyle(BCColors.textTertiary)
                                 }
                             }

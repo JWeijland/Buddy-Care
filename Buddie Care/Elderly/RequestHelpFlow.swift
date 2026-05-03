@@ -11,6 +11,8 @@ struct RequestHelpFlow: View {
     @State private var showingConfirmation = false
     @State private var customDate: Date = Date().addingTimeInterval(3600)
     @State private var useCustomDate: Bool = false
+    @Environment(\.largeTextEnabled) private var largeText
+    private var et: BCElderlyType { BCElderlyType(large: largeText) }
 
     var body: some View {
         NavigationStack {
@@ -58,12 +60,15 @@ struct RequestHelpFlow: View {
         ScrollView {
             VStack(alignment: .leading, spacing: BCSpacing.md) {
                 Text("Waar heeft u hulp bij nodig?")
-                    .font(BCTypography.elderlyHeading)
+                    .font(et.heading)
                     .foregroundStyle(BCColors.textPrimary)
                     .padding(.horizontal, BCSpacing.lg)
                     .padding(.top, BCSpacing.md)
 
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: BCSpacing.sm), GridItem(.flexible(), spacing: BCSpacing.sm)], spacing: BCSpacing.sm) {
+                let columns = largeText
+                    ? [GridItem(.flexible())]
+                    : [GridItem(.flexible(), spacing: BCSpacing.sm), GridItem(.flexible(), spacing: BCSpacing.sm)]
+                LazyVGrid(columns: columns, spacing: BCSpacing.sm) {
                     ForEach(TaskCategory.allCases) { category in
                         CategoryTile(
                             category: category,
@@ -102,7 +107,7 @@ struct RequestHelpFlow: View {
         ScrollView {
             VStack(alignment: .leading, spacing: BCSpacing.md) {
                 Text("Wanneer wilt u hulp?")
-                    .font(BCTypography.elderlyHeading)
+                    .font(et.heading)
                     .foregroundStyle(BCColors.textPrimary)
                     .padding(.horizontal, BCSpacing.lg)
                     .padding(.top, BCSpacing.md)
@@ -311,81 +316,99 @@ struct RequestHelpFlow: View {
 }
 
 private struct CategoryTile: View {
+    @Environment(\.largeTextEnabled) private var largeText
     let category: TaskCategory
     let isSelected: Bool
     let action: () -> Void
 
+    private var et: BCElderlyType { BCElderlyType(large: largeText) }
+
     var body: some View {
         Button(action: action) {
-            VStack(spacing: BCSpacing.xs) {
-                Image(systemName: category.icon)
-                    .font(.system(size: 28, weight: .semibold))
-                    .foregroundStyle(isSelected ? .white : BCColors.primary)
-                    .frame(width: 56, height: 56)
-                    .background(
-                        Circle().fill(isSelected ? BCColors.primary : BCColors.primary.opacity(0.10))
-                    )
-                Text(category.displayName)
-                    .font(BCTypography.bodyEmphasized)
-                    .foregroundStyle(BCColors.textPrimary)
-                    .multilineTextAlignment(.center)
+            if largeText {
+                // Large: horizontal layout for 1-column rows
+                HStack(spacing: BCSpacing.md) {
+                    Image(systemName: category.icon)
+                        .font(.system(size: 34, weight: .semibold))
+                        .foregroundStyle(isSelected ? .white : BCColors.primary)
+                        .frame(width: 68, height: 68)
+                        .background(Circle().fill(isSelected ? BCColors.primary : BCColors.primary.opacity(0.10)))
+                    Text(category.displayName)
+                        .font(et.button)
+                        .foregroundStyle(BCColors.textPrimary)
+                        .multilineTextAlignment(.leading)
+                    Spacer()
+                    if isSelected {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 24))
+                            .foregroundStyle(BCColors.primary)
+                    }
+                }
+                .padding(BCSpacing.md)
+                .frame(maxWidth: .infinity)
+                .background(RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous).fill(BCColors.surface))
+                .overlay(RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous).stroke(isSelected ? BCColors.primary : BCColors.border, lineWidth: isSelected ? 2 : 1))
+            } else {
+                // Normal: vertical layout for 2-column grid
+                VStack(spacing: BCSpacing.xs) {
+                    Image(systemName: category.icon)
+                        .font(.system(size: 28, weight: .semibold))
+                        .foregroundStyle(isSelected ? .white : BCColors.primary)
+                        .frame(width: 56, height: 56)
+                        .background(Circle().fill(isSelected ? BCColors.primary : BCColors.primary.opacity(0.10)))
+                    Text(category.displayName)
+                        .font(BCTypography.bodyEmphasized)
+                        .foregroundStyle(BCColors.textPrimary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(BCSpacing.md)
+                .frame(maxWidth: .infinity, minHeight: 130)
+                .background(RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous).fill(BCColors.surface))
+                .overlay(RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous).stroke(isSelected ? BCColors.primary : BCColors.border, lineWidth: isSelected ? 2 : 1))
             }
-            .padding(BCSpacing.md)
-            .frame(maxWidth: .infinity, minHeight: 130)
-            .background(
-                RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous)
-                    .fill(BCColors.surface)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous)
-                    .stroke(isSelected ? BCColors.primary : BCColors.border, lineWidth: isSelected ? 2 : 1)
-            )
         }
         .buttonStyle(.plain)
     }
 }
 
 private struct TimingTile: View {
+    @Environment(\.largeTextEnabled) private var largeText
     let title: String
     let subtitle: String
     let icon: String
     let isSelected: Bool
     let action: () -> Void
 
+    private var et: BCElderlyType { BCElderlyType(large: largeText) }
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: BCSpacing.md) {
                 Image(systemName: icon)
-                    .font(.system(size: 22, weight: .semibold))
+                    .font(.system(size: largeText ? 28 : 22, weight: .semibold))
                     .foregroundStyle(isSelected ? .white : BCColors.primary)
-                    .frame(width: 48, height: 48)
-                    .background(
-                        Circle().fill(isSelected ? BCColors.primary : BCColors.primary.opacity(0.10))
-                    )
+                    .frame(width: largeText ? 60 : 48, height: largeText ? 60 : 48)
+                    .background(Circle().fill(isSelected ? BCColors.primary : BCColors.primary.opacity(0.10)))
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .font(BCTypography.headline)
+                        .font(et.body)
                         .foregroundStyle(BCColors.textPrimary)
-                    Text(subtitle)
-                        .font(BCTypography.subheadline)
-                        .foregroundStyle(BCColors.textSecondary)
+                    if !largeText {
+                        Text(subtitle)
+                            .font(et.caption)
+                            .foregroundStyle(BCColors.textSecondary)
+                    }
                 }
                 Spacer()
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 22, weight: .semibold))
+                        .font(.system(size: largeText ? 28 : 22, weight: .semibold))
                         .foregroundStyle(BCColors.primary)
                 }
             }
-            .padding(BCSpacing.md)
-            .background(
-                RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous)
-                    .fill(BCColors.surface)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous)
-                    .stroke(isSelected ? BCColors.primary : BCColors.border, lineWidth: isSelected ? 2 : 1)
-            )
+            .padding(largeText ? BCSpacing.lg : BCSpacing.md)
+            .background(RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous).fill(BCColors.surface))
+            .overlay(RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous).stroke(isSelected ? BCColors.primary : BCColors.border, lineWidth: isSelected ? 2 : 1))
         }
         .buttonStyle(.plain)
     }
