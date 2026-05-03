@@ -182,7 +182,7 @@ private struct TrustPill: View {
 
 // MARK: - Edit sheet
 
-private struct EditProfileSheet: View {
+struct EditProfileSheet: View {
     @Environment(AppState.self) private var appState
     @Environment(\.dismiss) private var dismiss
     @Environment(\.largeTextEnabled) private var largeText

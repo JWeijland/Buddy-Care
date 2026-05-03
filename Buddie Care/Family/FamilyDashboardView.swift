@@ -3,6 +3,7 @@ import SwiftUI
 struct FamilyDashboardView: View {
     @Environment(AppState.self) private var appState
     @State private var showRequestFlow = false
+    @State private var showEditProfile = false
     @Binding var showLinking: Bool
 
     init(showLinking: Binding<Bool> = .constant(false)) {
@@ -34,7 +35,17 @@ struct FamilyDashboardView: View {
                                         .foregroundStyle(BCColors.textSecondary)
                                 }
                                 Spacer()
-                                BCStatusPill(label: "Gekoppeld", color: BCColors.success)
+                                Button {
+                                    showEditProfile = true
+                                } label: {
+                                    Label("Aanpassen", systemImage: "pencil")
+                                        .font(BCTypography.captionEmphasized)
+                                        .foregroundStyle(BCColors.primary)
+                                        .padding(.horizontal, BCSpacing.sm)
+                                        .padding(.vertical, BCSpacing.xs)
+                                        .background(Capsule().fill(BCColors.primary.opacity(0.08)))
+                                }
+                                .buttonStyle(.plain)
                             }
                             Divider()
                             HStack(spacing: BCSpacing.md) {
@@ -120,6 +131,9 @@ struct FamilyDashboardView: View {
         .background(BCColors.background.ignoresSafeArea())
         .sheet(isPresented: $showRequestFlow) {
             RequestHelpFlow()
+        }
+        .sheet(isPresented: $showEditProfile) {
+            EditProfileSheet()
         }
     }
 }
