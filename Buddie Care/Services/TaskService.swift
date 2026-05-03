@@ -1,19 +1,12 @@
 import Foundation
-import CoreLocation
-
-// ============================================================
-// TaskService — taken ophalen, aanmaken en statusupdates
-// Alle functies zijn stubs; vervang TODO's met echte Supabase-queries
-// ============================================================
+import Supabase
 
 final class TaskService {
 
-    // MARK: - Open taken ophalen (voor buddy kaart)
+    // MARK: - Open taken ophalen (buddy kaart)
 
     func fetchOpenTasks(maxLevel: Int) async throws -> [DBTask] {
-        // TODO[real-integration]:
-        /*
-        let tasks: [DBTask] = try await supabase
+        try await supabase
             .from("tasks")
             .select()
             .eq("status", value: "open")
@@ -21,144 +14,309 @@ final class TaskService {
             .order("created_at", ascending: false)
             .execute()
             .value
-        return tasks
-        */
-        return []   // stub — app gebruikt MockData.openTasks in demo-modus
     }
 
-    // MARK: - Taak aanmaken (door elderly of familie)
+    // MARK: - Taken voor een oudere (geschiedenis + actief)
+
+    func fetchTasksForElderly(elderlyId: UUID) async throws -> [DBTask] {
+        try await supabase
+            .from("tasks")
+            .select()
+            .eq("elderly_id", value: elderlyId.uuidString)
+            .order("created_at", ascending: false)
+            .execute()
+            .value
+    }
+
+    // MARK: - Taak aanmaken
 
     func createTask(
-        elderlyId: String,
+        elderlyId: UUID,
         category: String,
         requiredLevel: Int,
         timingType: String,
-        scheduledAt: Date?,
+        scheduledAt: Date? = nil,
         note: String,
         priceCents: Int
-    ) async throws -> DBTask? {
-        // TODO[real-integration]:
-        /*
-        let task: DBTask = try await supabase
+    ) async throws -> DBTask {
+        struct Insert: Encodable {
+            let elderlyId: UUID
+            let category: String
+            let requiredLevel: Int
+            let timingType: String
+            let scheduledAt: Date?
+            let note: String
+            let priceCents: Int
+            enum CodingKeys: String, CodingKey {
+                case elderlyId = "elderly_id"
+                case category
+                case requiredLevel = "required_level"
+                case timingType    = "timing_type"
+                case scheduledAt   = "scheduled_at"
+                case note
+                case priceCents    = "price_cents"
+            }
+        }
+
+        return try await supabase
             .from("tasks")
-            .insert([
-                "elderly_id":     elderlyId,
-                "category":       category,
-                "required_level": requiredLevel,
-                "timing_type":    timingType,
-                "scheduled_at":   scheduledAt?.iso8601,
-                "note":           note,
-                "price_cents":    priceCents
-            ])
+            .insert(Insert(
+                elderlyId: elderlyId,
+                category: category,
+                requiredLevel: requiredLevel,
+                timingType: timingType,
+                scheduledAt: scheduledAt,
+                note: note,
+                priceCents: priceCents
+            ))
             .select()
             .single()
             .execute()
             .value
-        return task
-        */
-        print("[TaskService] createTask stub")
-        return nil
     }
 
     // MARK: - Taak accepteren (buddy)
 
-    func acceptTask(taskId: String, buddyId: String, etaMinutes: Int) async throws {
-        // TODO[real-integration]:
-        /*
+    func acceptTask(taskId: UUID, buddyId: UUID, etaMinutes: Int) async throws {
+        struct Update: Encodable {
+            let status: String
+            let assignedBuddyId: UUID
+            let acceptedAt: Date
+            let buddyEtaMinutes: Int
+            enum CodingKeys: String, CodingKey {
+                case status
+                case assignedBuddyId  = "assigned_buddy_id"
+                case acceptedAt       = "accepted_at"
+                case buddyEtaMinutes  = "buddy_eta_minutes"
+            }
+        }
+
         try await supabase
             .from("tasks")
-            .update([
-                "status":              "accepted",
-                "assigned_buddy_id":   buddyId,
-                "accepted_at":         Date().iso8601,
-                "buddy_eta_minutes":   etaMinutes
-            ])
-            .eq("id", value: taskId)
+            .update(Update(
+                status: "accepted",
+                assignedBuddyId: buddyId,
+                acceptedAt: Date(),
+                buddyEtaMinutes: etaMinutes
+            ))
+            .eq("id", value: taskId.uuidString)
             .execute()
-        */
-        print("[TaskService] acceptTask stub — taskId: \(taskId)")
     }
 
-    // MARK: - Buddy aankomst registreren
+    // MARK: - Buddy aankomst
 
-    func markArrived(taskId: String) async throws {
-        // TODO[real-integration]:
-        /*
+    func markArrived(taskId: UUID) async throws {
+        struct Update: Encodable {
+            let status: String
+            let arrivedAt: Date
+            enum CodingKeys: String, CodingKey {
+                case status
+                case arrivedAt = "arrived_at"
+            }
+        }
+
         try await supabase
             .from("tasks")
-            .update(["status": "arrived", "arrived_at": Date().iso8601])
-            .eq("id", value: taskId)
+            .update(Update(status: "arrived", arrivedAt: Date()))
+            .eq("id", value: taskId.uuidString)
             .execute()
-        */
-        print("[TaskService] markArrived stub")
     }
 
     // MARK: - Taak afronden
 
-    func completeTask(taskId: String, buddyId: String, note: String, amountCents: Int, elderlyName: String, category: String) async throws {
-        // TODO[real-integration]:
-        /*
-        // Update taak
+    func completeTask(
+        taskId: UUID,
+        buddyId: UUID,
+        note: String,
+        netAmountCents: Int,
+        elderlyName: String,
+        category: String
+    ) async throws {
+        struct TaskUpdate: Encodable {
+            let status: String
+            let completedAt: Date
+            let completionNote: String
+            enum CodingKeys: String, CodingKey {
+                case status
+                case completedAt   = "completed_at"
+                case completionNote = "completion_note"
+            }
+        }
+        struct EarningInsert: Encodable {
+            let buddyId: UUID
+            let taskId: UUID
+            let elderlyName: String
+            let category: String
+            let amountCents: Int
+            enum CodingKeys: String, CodingKey {
+                case buddyId     = "buddy_id"
+                case taskId      = "task_id"
+                case elderlyName = "elderly_name"
+                case category
+                case amountCents = "amount_cents"
+            }
+        }
+
+        // Taak afsluiten
         try await supabase
             .from("tasks")
-            .update([
-                "status":           "completed",
-                "completed_at":     Date().iso8601,
-                "completion_note":  note
-            ])
-            .eq("id", value: taskId)
+            .update(TaskUpdate(status: "completed", completedAt: Date(), completionNote: note))
+            .eq("id", value: taskId.uuidString)
             .execute()
 
-        // Verdienstrecord aanmaken (80% van price_cents)
+        // Verdienstrecord aanmaken (netto na platformcommissie)
         try await supabase
             .from("earnings")
-            .insert([
-                "buddy_id":     buddyId,
-                "task_id":      taskId,
-                "elderly_name": elderlyName,
-                "category":     category,
-                "amount_cents": amountCents
-            ])
+            .insert(EarningInsert(
+                buddyId: buddyId,
+                taskId: taskId,
+                elderlyName: elderlyName,
+                category: category,
+                amountCents: netAmountCents
+            ))
             .execute()
-        */
-        print("[TaskService] completeTask stub")
     }
 
     // MARK: - Verdiensten ophalen
 
-    func fetchEarnings(buddyId: String) async throws -> [DBEarning] {
-        // TODO[real-integration]:
-        /*
-        let earnings: [DBEarning] = try await supabase
+    func fetchEarnings(buddyId: UUID) async throws -> [DBEarning] {
+        try await supabase
             .from("earnings")
             .select()
-            .eq("buddy_id", value: buddyId)
+            .eq("buddy_id", value: buddyId.uuidString)
             .order("created_at", ascending: false)
             .execute()
             .value
-        return earnings
-        */
-        return []
     }
 
-    // MARK: - Realtime taakupdates (voor live statuswijzigingen op kaart)
+    // MARK: - Review plaatsen
 
-    func subscribeToTaskUpdates(elderlyId: String, onUpdate: @escaping (DBTask) -> Void) {
-        // TODO[real-integration]:
-        /*
-        let channel = supabase.channel("tasks:\(elderlyId)")
-        channel.on(.postgresChanges(
-            event: .update,
-            schema: "public",
-            table: "tasks",
-            filter: "elderly_id=eq.\(elderlyId)"
-        )) { payload in
-            if let task = try? payload.decodeRecord(as: DBTask.self) {
-                onUpdate(task)
+    func submitReview(
+        taskId: UUID,
+        reviewerId: UUID,
+        revieweeId: UUID,
+        stars: Int,
+        body: String
+    ) async throws {
+        struct Insert: Encodable {
+            let taskId: UUID
+            let reviewerId: UUID
+            let revieweeId: UUID
+            let stars: Int
+            let body: String
+            enum CodingKeys: String, CodingKey {
+                case taskId     = "task_id"
+                case reviewerId = "reviewer_id"
+                case revieweeId = "reviewee_id"
+                case stars, body
             }
         }
-        channel.subscribe()
-        */
-        print("[TaskService] subscribeToTaskUpdates stub")
+
+        try await supabase
+            .from("reviews")
+            .insert(Insert(
+                taskId: taskId,
+                reviewerId: reviewerId,
+                revieweeId: revieweeId,
+                stars: stars,
+                body: body
+            ))
+            .execute()
+    }
+
+    // MARK: - Cursusvoortgang opslaan
+
+    func markModuleComplete(buddyId: UUID, courseId: String, moduleId: String) async throws {
+        struct Insert: Encodable {
+            let buddyId: UUID
+            let courseId: String
+            let moduleId: String
+            enum CodingKeys: String, CodingKey {
+                case buddyId  = "buddy_id"
+                case courseId = "course_id"
+                case moduleId = "module_id"
+            }
+        }
+
+        // ignoreDuplicates zodat dubbel aanroepen geen error geeft
+        try await supabase
+            .from("course_progress")
+            .upsert(
+                Insert(buddyId: buddyId, courseId: courseId, moduleId: moduleId),
+                onConflict: "buddy_id,course_id,module_id"
+            )
+            .execute()
+    }
+
+    func fetchCourseProgress(buddyId: UUID) async throws -> [DBCourseProgress] {
+        try await supabase
+            .from("course_progress")
+            .select()
+            .eq("buddy_id", value: buddyId.uuidString)
+            .execute()
+            .value
+    }
+
+    // MARK: - Familie koppelen via code
+
+    func validateLinkingCode(code: String) async throws -> DBLinkingCode? {
+        let results: [DBLinkingCode] = try await supabase
+            .from("linking_codes")
+            .select()
+            .eq("code", value: code)
+            .filter("used_at", operator: "is", value: "null")
+            .gte("expires_at", value: Date().ISO8601Format())
+            .limit(1)
+            .execute()
+            .value
+        return results.first
+    }
+
+    func linkFamilyToElderly(familyId: UUID, elderlyId: UUID, code: String) async throws {
+        struct LinkInsert: Encodable {
+            let familyId: UUID
+            let elderlyId: UUID
+            enum CodingKeys: String, CodingKey {
+                case familyId  = "family_id"
+                case elderlyId = "elderly_id"
+            }
+        }
+
+        // Koppeling aanmaken
+        try await supabase
+            .from("family_elderly_links")
+            .insert(LinkInsert(familyId: familyId, elderlyId: elderlyId))
+            .execute()
+
+        // Code markeren als gebruikt
+        try await supabase
+            .from("linking_codes")
+            .update(["used_at": Date().ISO8601Format()])
+            .eq("code", value: code)
+            .execute()
+    }
+
+    // MARK: - Realtime: live taakupdates voor elderly/familie
+
+    func subscribeToTaskUpdates(elderlyId: UUID, onUpdate: @escaping (DBTask) -> Void) async {
+        let channel = await supabase.realtimeV2.channel("tasks-\(elderlyId.uuidString)")
+
+        let changes = await channel.postgresChange(
+            AnyAction.self,
+            schema: "public",
+            table: "tasks",
+            filter: "elderly_id=eq.\(elderlyId.uuidString)"
+        )
+
+        await channel.subscribe()
+
+        Task {
+            for await change in changes {
+                if case let .update(action) = change,
+                   let task = try? action.decodeRecord(as: DBTask.self, decoder: JSONDecoder()) {
+                    await MainActor.run { onUpdate(task) }
+                }
+            }
+        }
     }
 }

@@ -1,39 +1,22 @@
 import Foundation
-// import Supabase   // TODO[real-integration]: uncomment na toevoegen van Supabase Swift package
-
-// ============================================================
-// HOE TOEVOEGEN:
-// Xcode → File → Add Package Dependencies
-// URL: https://github.com/supabase/supabase-swift
-// Version: "Up to Next Major" vanaf 2.0.0
-// Voeg toe aan target: Buddie Care
-// ============================================================
-
-// TODO[real-integration]: Vervang onderstaande placeholders met echte waarden
-// uit Supabase → Settings → API
-
-enum SupabaseConfig {
-    static let url  = "https://JOUW-PROJECT-ID.supabase.co"
-    static let key  = "JOUW-ANON-PUBLIC-KEY"
-}
-
-// TODO[real-integration]: Uncomment dit blok nadat het Supabase package is toegevoegd
-/*
 import Supabase
 
+// ============================================================
+// Supabase client — singleton, beschikbaar door de hele app
+// ============================================================
+
 let supabase = SupabaseClient(
-    supabaseURL: URL(string: SupabaseConfig.url)!,
-    supabaseKey: SupabaseConfig.key
+    supabaseURL: URL(string: "https://oopmfcymxjataisfhryq.supabase.co")!,
+    supabaseKey: "sb_publishable_L8AP2lH8HOx99pHTSTZDHA_KzoW2qbC"
 )
-*/
 
 // ============================================================
 // DATABASE MODELLEN
-// Komen overeen met de tabellen in schema.sql
+// Komen 1-op-1 overeen met de tabellen in schema.sql
 // ============================================================
 
-struct DBProfile: Codable {
-    let id: String
+struct DBProfile: Codable, Identifiable {
+    let id: UUID
     let role: String
     let firstName: String
     let lastName: String
@@ -49,8 +32,8 @@ struct DBProfile: Codable {
     }
 }
 
-struct DBElderlyProfile: Codable {
-    let id: String
+struct DBElderlyProfile: Codable, Identifiable {
+    let id: UUID
     var address: String?
     var latitude: Double?
     var longitude: Double?
@@ -65,8 +48,8 @@ struct DBElderlyProfile: Codable {
     }
 }
 
-struct DBBuddyProfile: Codable {
-    let id: String
+struct DBBuddyProfile: Codable, Identifiable {
+    let id: UUID
     var level: Int?
     var bio: String?
     var study: String?
@@ -81,21 +64,21 @@ struct DBBuddyProfile: Codable {
 
     enum CodingKeys: String, CodingKey {
         case id, level, bio, study
-        case ratingAverage       = "rating_average"
-        case totalTasks          = "total_tasks"
-        case kycVerified         = "kyc_verified"
-        case vogValid            = "vog_valid"
-        case vogExpiresAt        = "vog_expires_at"
-        case ibanLast4           = "iban_last4"
-        case isAvailableNow      = "is_available_now"
+        case ratingAverage        = "rating_average"
+        case totalTasks           = "total_tasks"
+        case kycVerified          = "kyc_verified"
+        case vogValid             = "vog_valid"
+        case vogExpiresAt         = "vog_expires_at"
+        case ibanLast4            = "iban_last4"
+        case isAvailableNow       = "is_available_now"
         case isOnboardingComplete = "is_onboarding_complete"
     }
 }
 
-struct DBTask: Codable {
-    let id: String
-    let elderlyId: String
-    var assignedBuddyId: String?
+struct DBTask: Codable, Identifiable {
+    let id: UUID
+    let elderlyId: UUID
+    var assignedBuddyId: UUID?
     let category: String
     let requiredLevel: Int
     let timingType: String
@@ -111,10 +94,9 @@ struct DBTask: Codable {
     var buddyEtaMinutes: Int?
 
     enum CodingKeys: String, CodingKey {
-        case id, note, status
+        case id, note, status, category
         case elderlyId        = "elderly_id"
         case assignedBuddyId  = "assigned_buddy_id"
-        case category
         case requiredLevel    = "required_level"
         case timingType       = "timing_type"
         case scheduledAt      = "scheduled_at"
@@ -128,11 +110,11 @@ struct DBTask: Codable {
     }
 }
 
-struct DBReview: Codable {
-    let id: String
-    let taskId: String
-    let reviewerId: String
-    let revieweeId: String
+struct DBReview: Codable, Identifiable {
+    let id: UUID
+    let taskId: UUID
+    let reviewerId: UUID
+    let revieweeId: UUID
     let stars: Int
     let body: String
     let createdAt: String
@@ -146,10 +128,10 @@ struct DBReview: Codable {
     }
 }
 
-struct DBEarning: Codable {
-    let id: String
-    let buddyId: String
-    let taskId: String
+struct DBEarning: Codable, Identifiable {
+    let id: UUID
+    let buddyId: UUID
+    let taskId: UUID
     let elderlyName: String
     let category: String
     let amountCents: Int
@@ -165,9 +147,9 @@ struct DBEarning: Codable {
     }
 }
 
-struct DBCourseProgress: Codable {
-    let id: String
-    let buddyId: String
+struct DBCourseProgress: Codable, Identifiable {
+    let id: UUID
+    let buddyId: UUID
     let courseId: String
     let moduleId: String
     let completedAt: String
@@ -183,7 +165,7 @@ struct DBCourseProgress: Codable {
 
 struct DBLinkingCode: Codable {
     let code: String
-    let elderlyId: String
+    let elderlyId: UUID
     let expiresAt: String
     var usedAt: String?
 
