@@ -48,6 +48,14 @@ final class AppState {
 
     private let taskService = TaskService()
 
+    func debugCompleteLevel(_ level: ServiceLevel) {
+        for course in MockData.courses where course.level == level {
+            for module in course.modules {
+                completedModules[course.id, default: []].insert(module.id)
+            }
+        }
+    }
+
     func recordModuleComplete(courseId: UUID, moduleId: UUID) {
         completedModules[courseId, default: []].insert(moduleId)
         if !isDemoMode, let userId = realUserId {

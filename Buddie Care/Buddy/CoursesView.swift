@@ -33,6 +33,18 @@ struct CoursesView: View {
                                                 .font(BCTypography.captionEmphasized)
                                                 .foregroundStyle(BCColors.success)
                                                 .transition(.scale.combined(with: .opacity))
+                                        } else if appState.isDemoMode && !completedLevels.contains(level) {
+                                            Button {
+                                                appState.debugCompleteLevel(level)
+                                            } label: {
+                                                Label("Demo", systemImage: "bolt.fill")
+                                                    .font(.system(size: 11, weight: .semibold))
+                                                    .foregroundStyle(BCColors.accent)
+                                                    .padding(.horizontal, 8)
+                                                    .padding(.vertical, 4)
+                                                    .background(Capsule().fill(BCColors.accent.opacity(0.12)))
+                                            }
+                                            .buttonStyle(.plain)
                                         }
                                     }
                                     Text(level.requirementText)
