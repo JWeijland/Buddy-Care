@@ -147,6 +147,46 @@ enum TaskCategory: String, CaseIterable, Identifiable, Codable {
     }
 }
 
+// MARK: - Recurring schedule
+
+enum RecurringFrequency: String, CaseIterable, Identifiable {
+    case daily       = "Dagelijks"
+    case everyOtherDay = "Om de dag"
+    case weekly      = "Wekelijks"
+
+    var id: String { rawValue }
+
+    var icon: String {
+        switch self {
+        case .daily:         return "repeat"
+        case .everyOtherDay: return "arrow.2.squarepath"
+        case .weekly:        return "calendar"
+        }
+    }
+
+    var calendarComponent: Calendar.Component {
+        switch self {
+        case .daily:         return .day
+        case .everyOtherDay: return .day
+        case .weekly:        return .weekOfYear
+        }
+    }
+
+    var stepValue: Int { self == .everyOtherDay ? 2 : 1 }
+}
+
+struct RecurringSchedule: Hashable {
+    let frequency: RecurringFrequency
+    let endDate: Date
+
+    var displayName: String {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "nl_NL")
+        f.dateFormat = "d MMM"
+        return "\(frequency.rawValue) t/m \(f.string(from: endDate))"
+    }
+}
+
 // MARK: - Task timing
 
 enum TaskTiming: Hashable {
@@ -221,6 +261,7 @@ struct ServiceTask: Identifiable, Hashable {
 
     var completionNote: String? = nil
     var completedAt: Date? = nil
+    var recurringSchedule: RecurringSchedule? = nil
 
     var priceFormatted: String {
         String(format: "€ %.2f", Double(priceCents) / 100).replacingOccurrences(of: ".", with: ",")

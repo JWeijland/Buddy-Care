@@ -11,8 +11,17 @@ struct RequestHelpFlow: View {
     @State private var showingConfirmation = false
     @State private var customDate: Date = Date().addingTimeInterval(3600)
     @State private var useCustomDate: Bool = false
+    // Recurring
+    @State private var isRecurring: Bool = false
+    @State private var recurringFrequency: RecurringFrequency = .daily
+    @State private var recurringEndDate: Date = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: Date()) ?? Date()
+    @State private var useCustomEndDate: Bool = false
     @Environment(\.largeTextEnabled) private var largeText
     private var et: BCElderlyType { BCElderlyType(large: largeText) }
+
+    private var recurringSchedule: RecurringSchedule? {
+        isRecurring ? RecurringSchedule(frequency: recurringFrequency, endDate: recurringEndDate) : nil
+    }
 
     var body: some View {
         NavigationStack {
@@ -105,94 +114,140 @@ struct RequestHelpFlow: View {
     // STEP 1 — tijd
     private var timingStep: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: BCSpacing.md) {
+            VStack(alignment: .leading, spacing: BCSpacing.lg) {
                 Text("Wanneer wilt u hulp?")
                     .font(et.heading)
                     .foregroundStyle(BCColors.textPrimary)
                     .padding(.horizontal, BCSpacing.lg)
                     .padding(.top, BCSpacing.md)
 
-                VStack(spacing: BCSpacing.sm) {
-                    TimingTile(
-                        title: "Zo snel mogelijk",
-                        subtitle: "Een buddy in de buurt komt eraan",
-                        icon: "bolt.fill",
-                        isSelected: selectedTiming == .now && !useCustomDate
-                    ) {
-                        useCustomDate = false
-                        selectedTiming = .now
-                    }
-                    TimingTile(
-                        title: "Vandaag om 16:00",
-                        subtitle: "Plan vandaag in",
-                        icon: "clock.fill",
-                        isSelected: selectedTiming == .today(hour: 16) && !useCustomDate
-                    ) {
-                        useCustomDate = false
-                        selectedTiming = .today(hour: 16)
-                    }
-                    TimingTile(
-                        title: "Morgen om 10:00",
-                        subtitle: "Plan voor morgen",
-                        icon: "calendar",
-                        isSelected: selectedTiming == .scheduled(date: tomorrowAt10) && !useCustomDate
-                    ) {
-                        useCustomDate = false
-                        selectedTiming = .scheduled(date: tomorrowAt10)
-                    }
-                    TimingTile(
-                        title: "Zelf kiezen",
-                        subtitle: "Kies een datum en tijd",
-                        icon: "calendar.badge.clock",
-                        isSelected: useCustomDate
-                    ) {
-                        useCustomDate = true
-                        selectedTiming = .scheduled(date: customDate)
-                    }
+                // Eenmalig / Periodiek toggle
+                Picker("", selection: $isRecurring) {
+                    Text("Eenmalig").tag(false)
+                    Text("Periodiek").tag(true)
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, BCSpacing.lg)
+                .onChange(of: isRecurring) { _, _ in
+                    selectedTiming = nil
+                    useCustomDate = false
+                }
 
-                    if useCustomDate {
-                        DatePicker(
-                            "",
-                            selection: $customDate,
-                            in: Date()...,
-                            displayedComponents: [.date, .hourAndMinute]
-                        )
-                        .datePickerStyle(.graphical)
-                        .tint(BCColors.primary)
-                        .padding(BCSpacing.md)
-                        .background(
-                            RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous)
-                                .fill(BCColors.surface)
-                        )
-                        .onChange(of: customDate) { _, newDate in
-                            selectedTiming = .scheduled(date: newDate)
+                // Timing tiles
+                VStack(spacing: BCSpacing.sm) {
+                    if !isRecurring {
+                        TimingTile(title: "Zo snel mogelijk", subtitle: "Een buddy in de buurt komt eraan",
+                                   icon: "bolt.fill", isSelected: selectedTiming == .now && !useCustomDate) {
+                            useCustomDate = false; selectedTiming = .now
                         }
                     }
+                    TimingTile(title: "Vandaag om 16:00", subtitle: "Plan voor vanmiddag",
+                               icon: "clock.fill", isSelected: selectedTiming == .today(hour: 16) && !useCustomDate) {
+                        useCustomDate = false; selectedTiming = .today(hour: 16)
+                    }
+                    TimingTile(title: "Morgen om 10:00", subtitle: "Plan voor morgenochtend",
+                               icon: "sunrise.fill", isSelected: selectedTiming == .scheduled(date: tomorrowAt10) && !useCustomDate) {
+                        useCustomDate = false; selectedTiming = .scheduled(date: tomorrowAt10)
+                    }
+                    TimingTile(title: "Zelf kiezen", subtitle: "Kies een datum en tijd",
+                               icon: "calendar.badge.clock", isSelected: useCustomDate) {
+                        useCustomDate = true; selectedTiming = .scheduled(date: customDate)
+                    }
+                    if useCustomDate {
+                        DatePicker("", selection: $customDate, in: Date()..., displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(.graphical)
+                            .tint(BCColors.primary)
+                            .padding(BCSpacing.md)
+                            .background(RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous).fill(BCColors.surface))
+                            .onChange(of: customDate) { _, d in selectedTiming = .scheduled(date: d) }
+                    }
                 }
                 .padding(.horizontal, BCSpacing.lg)
 
+                // Periodieke opties
+                if isRecurring {
+                    recurringSection
+                }
+
+                // Opmerking
                 VStack(alignment: .leading, spacing: BCSpacing.xs) {
-                    Text("Iets toevoegen voor de buddy? (optioneel)")
-                        .font(BCTypography.subheadline)
+                    Text("Opmerking voor de buddy (optioneel)")
+                        .font(et.caption)
                         .foregroundStyle(BCColors.textSecondary)
-                    TextField("Bijvoorbeeld: bel maar twee keer aan", text: $note, axis: .vertical)
+                    TextField("Bijv. bel twee keer aan", text: $note, axis: .vertical)
                         .lineLimit(3, reservesSpace: true)
-                        .font(BCTypography.body)
+                        .font(et.body)
                         .padding(BCSpacing.md)
-                        .background(
-                            RoundedRectangle(cornerRadius: BCRadius.md, style: .continuous)
-                                .fill(BCColors.surface)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: BCRadius.md, style: .continuous)
-                                .stroke(BCColors.border, lineWidth: 1)
-                        )
+                        .background(RoundedRectangle(cornerRadius: BCRadius.md, style: .continuous).fill(BCColors.surface))
+                        .overlay(RoundedRectangle(cornerRadius: BCRadius.md, style: .continuous).stroke(BCColors.border, lineWidth: 1))
                 }
                 .padding(.horizontal, BCSpacing.lg)
-                .padding(.top, BCSpacing.md)
             }
             .padding(.bottom, BCSpacing.lg)
         }
+    }
+
+    private var recurringSection: some View {
+        VStack(alignment: .leading, spacing: BCSpacing.sm) {
+            Text("Hoe vaak?")
+                .font(et.body)
+                .foregroundStyle(BCColors.textPrimary)
+                .padding(.horizontal, BCSpacing.lg)
+
+            VStack(spacing: BCSpacing.sm) {
+                ForEach(RecurringFrequency.allCases) { freq in
+                    TimingTile(title: freq.rawValue, subtitle: "", icon: freq.icon,
+                               isSelected: recurringFrequency == freq) {
+                        recurringFrequency = freq
+                    }
+                }
+            }
+            .padding(.horizontal, BCSpacing.lg)
+
+            Text("Tot wanneer?")
+                .font(et.body)
+                .foregroundStyle(BCColors.textPrimary)
+                .padding(.horizontal, BCSpacing.lg)
+                .padding(.top, BCSpacing.xs)
+
+            VStack(spacing: BCSpacing.sm) {
+                ForEach(endDatePresets, id: \.label) { preset in
+                    TimingTile(title: preset.label, subtitle: preset.subtitle, icon: preset.icon,
+                               isSelected: !useCustomEndDate && Calendar.current.isDate(recurringEndDate, inSameDayAs: preset.date)) {
+                        useCustomEndDate = false
+                        recurringEndDate = preset.date
+                    }
+                }
+                TimingTile(title: "Zelf kiezen", subtitle: "Kies een einddatum",
+                           icon: "calendar.badge.clock", isSelected: useCustomEndDate) {
+                    useCustomEndDate = true
+                }
+                if useCustomEndDate {
+                    DatePicker("", selection: $recurringEndDate, in: Date()..., displayedComponents: .date)
+                        .datePickerStyle(.graphical)
+                        .tint(BCColors.primary)
+                        .padding(BCSpacing.md)
+                        .background(RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous).fill(BCColors.surface))
+                }
+            }
+            .padding(.horizontal, BCSpacing.lg)
+        }
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    private var endDatePresets: [(label: String, subtitle: String, icon: String, date: Date)] {
+        let cal = Calendar.current
+        let now = Date()
+        return [
+            ("1 week",  "t/m \(formatted(cal.date(byAdding: .weekOfYear, value: 1, to: now)!))",  "calendar",            cal.date(byAdding: .weekOfYear, value: 1, to: now)!),
+            ("2 weken", "t/m \(formatted(cal.date(byAdding: .weekOfYear, value: 2, to: now)!))",  "calendar",            cal.date(byAdding: .weekOfYear, value: 2, to: now)!),
+            ("1 maand", "t/m \(formatted(cal.date(byAdding: .month,     value: 1, to: now)!))",   "calendar.badge.plus", cal.date(byAdding: .month,      value: 1, to: now)!),
+        ]
+    }
+
+    private func formatted(_ date: Date) -> String {
+        let f = DateFormatter(); f.locale = Locale(identifier: "nl_NL"); f.dateFormat = "d MMM"
+        return f.string(from: date)
     }
 
     private var tomorrowAt10: Date {
@@ -217,6 +272,10 @@ struct RequestHelpFlow: View {
                                    icon: selectedCategory?.icon ?? "questionmark")
                         Divider()
                         SummaryRow(label: "Wanneer", value: selectedTiming?.displayName ?? "—", icon: "clock.fill")
+                        if let sched = recurringSchedule {
+                            Divider()
+                            SummaryRow(label: "Herhaling", value: sched.displayName, icon: "repeat")
+                        }
                         Divider()
                         SummaryRow(label: "Adres", value: appState.elderlyUser.address, icon: "house.fill")
                         if !note.isEmpty {
@@ -230,15 +289,20 @@ struct RequestHelpFlow: View {
                 BCCard {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Geschat tarief")
+                            Text(isRecurring ? "Tarief per bezoek" : "Geschat tarief")
                                 .font(BCTypography.subheadline)
                                 .foregroundStyle(BCColors.textSecondary)
                             Text(formattedPrice)
                                 .font(BCTypography.title2)
                                 .foregroundStyle(BCColors.textPrimary)
+                            if isRecurring {
+                                Text("Elke keer apart verrekend via uw tegoed")
+                                    .font(BCTypography.caption)
+                                    .foregroundStyle(BCColors.textTertiary)
+                            }
                         }
                         Spacer()
-                        Image(systemName: "creditcard.fill")
+                        Image(systemName: isRecurring ? "repeat" : "creditcard.fill")
                             .font(.system(size: 28, weight: .semibold))
                             .foregroundStyle(BCColors.primary)
                     }
@@ -288,7 +352,7 @@ struct RequestHelpFlow: View {
     private var canContinue: Bool {
         switch step {
         case 0: return selectedCategory != nil
-        case 1: return selectedTiming != nil
+        case 1: return selectedTiming != nil && (!isRecurring || recurringEndDate > Date())
         case 2: return true
         default: return false
         }
@@ -304,7 +368,7 @@ struct RequestHelpFlow: View {
 
     private func confirm() {
         guard let cat = selectedCategory, let timing = selectedTiming else { return }
-        appState.requestHelp(category: cat, timing: timing, note: note)
+        appState.requestHelp(category: cat, timing: timing, note: note, recurringSchedule: recurringSchedule)
         dismiss()
         // Simulate buddy accepting after a brief delay
         if let task = appState.activeTaskForElderly {
@@ -407,6 +471,7 @@ private struct TimingTile: View {
                 }
             }
             .padding(largeText ? BCSpacing.lg : BCSpacing.md)
+            .frame(maxWidth: .infinity, minHeight: largeText ? 88 : 72)
             .background(RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous).fill(BCColors.surface))
             .overlay(RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous).stroke(isSelected ? BCColors.primary : BCColors.border, lineWidth: isSelected ? 2 : 1))
         }

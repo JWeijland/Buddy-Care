@@ -145,8 +145,8 @@ final class AppState {
 
     // MARK: - Task actions
 
-    func requestHelp(category: TaskCategory, timing: TaskTiming, note: String) {
-        let task = ServiceTask(
+    func requestHelp(category: TaskCategory, timing: TaskTiming, note: String, recurringSchedule: RecurringSchedule? = nil) {
+        var task = ServiceTask(
             id: UUID(),
             elderlyName: elderlyUser.firstName,
             elderlyAddress: elderlyUser.address,
@@ -162,6 +162,7 @@ final class AppState {
             assignedBuddyRating: nil,
             assignedBuddyEtaMinutes: nil
         )
+        task.recurringSchedule = recurringSchedule
         openTasks.insert(task, at: 0)
         activeTaskForElderly = task
     }
