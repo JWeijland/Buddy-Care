@@ -78,11 +78,33 @@ struct RoleSelectionView: View {
     }
 
     private var prototypeNote: some View {
-        Text("Prototype — selecteer een rol om de bijbehorende app-ervaring te bekijken. In de echte app wordt uw rol bepaald bij het aanmaken van uw account.")
-            .font(BCTypography.caption)
-            .foregroundStyle(BCColors.textTertiary)
-            .multilineTextAlignment(.center)
-            .padding(.top, BCSpacing.lg)
+        VStack(spacing: BCSpacing.md) {
+            Text("Prototype — selecteer een rol om de bijbehorende app-ervaring te bekijken. In de echte app wordt uw rol bepaald bij het aanmaken van uw account.")
+                .font(BCTypography.caption)
+                .foregroundStyle(BCColors.textTertiary)
+                .multilineTextAlignment(.center)
+                .padding(.top, BCSpacing.lg)
+
+            Button {
+                appState.hasSeenSplash = true
+                appState.isOnboardingComplete = true
+                appState.currentRole = .buddy
+            } label: {
+                HStack(spacing: BCSpacing.sm) {
+                    Image(systemName: "bolt.fill")
+                        .font(.system(size: 13, weight: .semibold))
+                    Text("Demo: ga direct naar Buddy kaart")
+                        .font(BCTypography.captionEmphasized)
+                }
+                .foregroundStyle(BCColors.primary)
+                .padding(.horizontal, BCSpacing.md)
+                .padding(.vertical, BCSpacing.sm)
+                .background(
+                    Capsule().fill(BCColors.primary.opacity(0.08))
+                )
+            }
+            .buttonStyle(.plain)
+        }
     }
 }
 

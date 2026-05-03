@@ -11,6 +11,12 @@ struct RootView: View {
                         withAnimation(.easeInOut(duration: 0.35)) {
                             appState.hasSeenSplash = true
                         }
+                    } onDemoMap: {
+                        appState.isOnboardingComplete = true
+                        appState.currentRole = .buddy
+                        withAnimation(.easeInOut(duration: 0.35)) {
+                            appState.hasSeenSplash = true
+                        }
                     }
                 } else {
                     switch appState.currentRole {

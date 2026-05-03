@@ -131,27 +131,11 @@ struct CourseDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AppState.self) private var appState
 
-    @State private var activeModuleType: ModuleType? = nil
-    @State private var activeModuleTitle: String = ""
-    @State private var activeModuleDuration: Int = 0
+    @State private var activeModule: CourseModuleData? = nil
     @State private var showCertificate: Bool = false
 
-    private var modules: [(title: String, type: ModuleType, duration: Int, done: Bool)] {
-        let total = course.modulesCount
-        return (0..<total).map { i in
-            let done = course.progressPercent >= Int(Double(i + 1) / Double(total) * 100)
-            if i == total - 1 {
-                return (title: "Eindtoets", type: .quiz, duration: 15, done: done)
-            } else if i == 0 {
-                return (title: "Introductie video", type: .video, duration: 8, done: done)
-            } else {
-                return (title: "Module \(i + 1): Leesmateriaal", type: .reading, duration: 12, done: done)
-            }
-        }
-    }
-
-    private var firstIncompleteIndex: Int? {
-        modules.firstIndex(where: { !$0.done })
+    private var firstIncompleteModule: CourseModuleData? {
+        course.modules.first(where: { !$0.isCompleted })
     }
 
     var body: some View {
@@ -184,45 +168,40 @@ struct CourseDetailView: View {
                     .foregroundStyle(BCColors.textTertiary)
 
                     if course.progressPercent > 0 {
-                        BCProgressBar(
-                            value: Double(course.progressPercent) / 100,
-                            label: "Voortgang",
-                            color: BCColors.primary
-                        )
+                        BCProgressBar(value: Double(course.progressPercent) / 100, label: "Voortgang", color: BCColors.primary)
                     }
 
-                    // Module list
                     BCCard {
                         VStack(alignment: .leading, spacing: BCSpacing.sm) {
                             Text("Modules")
                                 .font(BCTypography.headline)
                                 .foregroundStyle(BCColors.textPrimary)
-                            ForEach(Array(modules.enumerated()), id: \.offset) { idx, module in
+                            ForEach(course.modules) { mod in
                                 HStack(spacing: BCSpacing.sm) {
                                     ZStack {
-                                        Circle().fill(module.done ? BCColors.success : BCColors.border)
+                                        Circle().fill(mod.isCompleted ? BCColors.success : BCColors.border)
                                             .frame(width: 32, height: 32)
-                                        if module.done {
+                                        if mod.isCompleted {
                                             Image(systemName: "checkmark")
                                                 .font(.system(size: 13, weight: .bold))
                                                 .foregroundStyle(.white)
                                         } else {
-                                            Image(systemName: moduleIcon(module.type))
+                                            Image(systemName: moduleIcon(mod.type))
                                                 .font(.system(size: 13, weight: .semibold))
                                                 .foregroundStyle(BCColors.textSecondary)
                                         }
                                     }
                                     VStack(alignment: .leading, spacing: 1) {
-                                        Text(module.title)
+                                        Text(mod.title)
                                             .font(BCTypography.body)
-                                            .foregroundStyle(module.done ? BCColors.textSecondary : BCColors.textPrimary)
-                                            .strikethrough(module.done, color: BCColors.textTertiary)
-                                        Text("\(module.duration) min")
+                                            .foregroundStyle(mod.isCompleted ? BCColors.textSecondary : BCColors.textPrimary)
+                                            .strikethrough(mod.isCompleted, color: BCColors.textTertiary)
+                                        Text("\(mod.durationMinutes) min")
                                             .font(BCTypography.caption)
                                             .foregroundStyle(BCColors.textTertiary)
                                     }
                                     Spacer()
-                                    if idx == firstIncompleteIndex {
+                                    if mod.id == firstIncompleteModule?.id {
                                         BCStatusPill(label: "Volgende", color: BCColors.primary)
                                     }
                                 }
@@ -233,20 +212,10 @@ struct CourseDetailView: View {
 
                     if course.unlocked {
                         if course.progressPercent == 100 {
-                            BCSecondaryButton(title: "Bekijk certificaat", icon: "rosette") {
-                                showCertificate = true
-                            }
+                            BCSecondaryButton(title: "Bekijk certificaat", icon: "rosette") { showCertificate = true }
                         } else {
-                            BCPrimaryButton(
-                                title: course.progressPercent > 0 ? "Doorgaan" : "Start cursus",
-                                icon: "play.fill"
-                            ) {
-                                if let idx = firstIncompleteIndex {
-                                    let m = modules[idx]
-                                    activeModuleTitle = m.title
-                                    activeModuleType = m.type
-                                    activeModuleDuration = m.duration
-                                }
+                            BCPrimaryButton(title: course.progressPercent > 0 ? "Doorgaan" : "Start cursus", icon: "play.fill") {
+                                activeModule = firstIncompleteModule
                             }
                         }
                     } else {
@@ -263,29 +232,15 @@ struct CourseDetailView: View {
                     Button("Sluiten") { dismiss() }.tint(BCColors.primary)
                 }
             }
-            .sheet(isPresented: Binding(
-                get: { activeModuleType != nil },
-                set: { if !$0 { activeModuleType = nil } }
-            )) {
-                if let type = activeModuleType {
-                    CourseModuleView(
-                        courseTitle: course.title,
-                        moduleTitle: activeModuleTitle,
-                        type: type,
-                        durationMinutes: activeModuleDuration
-                    ) {
-                        activeModuleType = nil
-                        if type == .quiz {
-                            showCertificate = true
-                        }
-                    }
+            .sheet(item: $activeModule) { mod in
+                CourseModuleView(module: mod, courseTitle: course.title) {
+                    let wasQuiz = mod.type == .quiz
+                    activeModule = nil
+                    if wasQuiz { showCertificate = true }
                 }
             }
             .sheet(isPresented: $showCertificate) {
-                CertificateView(
-                    level: course.level,
-                    buddyName: appState.buddyUser.fullName
-                )
+                CertificateView(level: course.level, buddyName: appState.buddyUser.fullName)
             }
         }
     }

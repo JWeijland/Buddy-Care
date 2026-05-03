@@ -124,15 +124,15 @@ enum TaskCategory: String, CaseIterable, Identifiable, Codable {
 
     var suggestedPriceCents: Int {
         switch self {
-        case .companionship: return 1300
-        case .groceries: return 1500
-        case .lightCleaning: return 1500
-        case .walkOutdoors: return 1300
-        case .appointment: return 1800
-        case .other: return 1500
-        case .mealPrep: return 1800
-        case .bedHelp: return 1800
-        case .medicationReminder: return 2200
+        case .companionship: return 1700
+        case .groceries: return 1700
+        case .lightCleaning: return 1700
+        case .walkOutdoors: return 1700
+        case .appointment: return 2100
+        case .other: return 1700
+        case .mealPrep: return 2100
+        case .bedHelp: return 2100
+        case .medicationReminder: return 2600
         }
     }
 }
@@ -293,15 +293,55 @@ struct Certification: Identifiable, Hashable {
     let expiresAt: Date
 }
 
+// MARK: - Course content types
+
+enum ModuleType: String, Hashable { case video, quiz, reading }
+
+struct QuizQuestionData: Identifiable, Hashable {
+    let id: UUID
+    let question: String
+    let options: [String]
+    let correctIndex: Int
+    let explanation: String
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+}
+
+struct ReadingSection: Identifiable, Hashable {
+    let id: UUID
+    let heading: String
+    let body: String
+    let symbol: String
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+}
+
+struct CourseModuleData: Identifiable, Hashable {
+    let id: UUID
+    let title: String
+    let type: ModuleType
+    let durationMinutes: Int
+    let illustrationSymbol: String
+    var isCompleted: Bool = false
+    var videoDescription: String = ""
+    var readingSections: [ReadingSection] = []
+    var quizQuestions: [QuizQuestionData] = []
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+}
+
 struct Course: Identifiable, Hashable {
     let id: UUID
     let level: ServiceLevel
     let title: String
     let durationMinutes: Int
-    let modulesCount: Int
     let progressPercent: Int
     let unlocked: Bool
     let summary: String
+    var modules: [CourseModuleData] = []
+    var modulesCount: Int { modules.count }
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }
 
 // MARK: - Earnings

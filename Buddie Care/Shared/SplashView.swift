@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SplashView: View {
     let onContinue: () -> Void
+    var onDemoMap: (() -> Void)? = nil
     @State private var logoScale: CGFloat = 0.8
     @State private var logoOpacity: Double = 0
 
@@ -62,6 +63,24 @@ struct SplashView: View {
                     .buttonStyle(.plain)
                     .padding(.horizontal, BCSpacing.lg)
                     .accessibilityLabel("Aan de slag, begin met Buddy Care")
+
+                    if let onDemoMap {
+                        Button {
+                            onDemoMap()
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: "bolt.fill")
+                                    .font(.system(size: 12, weight: .semibold))
+                                Text("Demo: Buddy kaart")
+                                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                            }
+                            .foregroundStyle(.white.opacity(0.75))
+                            .padding(.horizontal, BCSpacing.md)
+                            .padding(.vertical, BCSpacing.xs)
+                            .background(Capsule().fill(.white.opacity(0.12)))
+                        }
+                        .buttonStyle(.plain)
+                    }
 
                     Text("Hulp nodig? Bel ons: \(Config.supportPhoneNumber)")
                         .font(.system(size: 14, weight: .regular, design: .rounded))

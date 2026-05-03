@@ -267,26 +267,7 @@ enum MockData {
         }()
     ]
 
-    static let courses: [Course] = [
-        Course(id: UUID(), level: .zero, title: "Basis Buddy — Welkom",
-               durationMinutes: 30, modulesCount: 3, progressPercent: 100, unlocked: true,
-               summary: "Kennismaken met Buddy Care, omgangsregels, communicatie met ouderen."),
-        Course(id: UUID(), level: .one, title: "Steunkousen & mobiliteit",
-               durationMinutes: 90, modulesCount: 5, progressPercent: 100, unlocked: true,
-               summary: "Veilig steunkousen aandoen, helpen bij opstaan en zitten met loophulpmiddel."),
-        Course(id: UUID(), level: .one, title: "Maaltijdvoorbereiding voor ouderen",
-               durationMinutes: 45, modulesCount: 4, progressPercent: 60, unlocked: true,
-               summary: "Veilig opwarmen, allergieën herkennen, slikproblemen signaleren."),
-        Course(id: UUID(), level: .two, title: "Medicatietoezicht",
-               durationMinutes: 120, modulesCount: 6, progressPercent: 0, unlocked: false,
-               summary: "Toezicht houden op innemen, schema's lezen, signalen herkennen. Vereist praktijktoets."),
-        Course(id: UUID(), level: .two, title: "Hulp bij wassen aan de wastafel",
-               durationMinutes: 90, modulesCount: 5, progressPercent: 0, unlocked: false,
-               summary: "Privacy, hygiëne, samen werken met de cliënt."),
-        Course(id: UUID(), level: .three, title: "ADL-zorg",
-               durationMinutes: 240, modulesCount: 10, progressPercent: 0, unlocked: false,
-               summary: "Algemene Dagelijkse Levensverrichtingen — alleen na Verzorgende IG diploma.")
-    ]
+    static let courses: [Course] = CourseContent.allCourses
 
     static let earnings: [EarningEntry] = [
         EarningEntry(id: UUID(), date: Date().addingTimeInterval(-86400), elderlyName: "Riet", category: .companionship, amountCents: 1040),

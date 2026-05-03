@@ -347,6 +347,32 @@ private struct VOGInfoSheet: View {
     }
 }
 
+// MARK: - BCIllustrationCard
+
+struct BCIllustrationCard: View {
+    let symbol: String
+    let color: Color
+    let caption: String
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous)
+                .fill(color.opacity(0.10))
+            VStack(spacing: BCSpacing.sm) {
+                Image(systemName: symbol)
+                    .font(.system(size: 52, weight: .semibold))
+                    .foregroundStyle(color)
+                Text(caption)
+                    .font(BCTypography.captionEmphasized)
+                    .foregroundStyle(color.opacity(0.85))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, BCSpacing.md)
+            }
+            .padding(.vertical, BCSpacing.xl)
+        }
+    }
+}
+
 // MARK: - BCToast
 
 struct BCToast: View {
