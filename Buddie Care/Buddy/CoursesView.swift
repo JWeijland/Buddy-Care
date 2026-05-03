@@ -125,7 +125,8 @@ struct CoursesView: View {
     }
 
     private var appliedCourses: [Course] {
-        MockData.courses.map { course in
+        // First pass: apply completion data
+        var built = MockData.courses.map { course in
             let done = appState.completedModules[course.id] ?? []
             var c = course
             for i in c.modules.indices {
@@ -136,6 +137,18 @@ struct CoursesView: View {
             c.progressPercent = total > 0 ? Int(Double(completed) / Double(total) * 100) : 0
             return c
         }
+        // Second pass: unlock a level when all courses of the previous level are done
+        for level in ServiceLevel.allCases {
+            guard level.rawValue > 0,
+                  let prev = ServiceLevel(rawValue: level.rawValue - 1) else { continue }
+            let prevDone = built.filter { $0.level == prev }.allSatisfy { $0.progressPercent == 100 }
+            if prevDone {
+                for i in built.indices where built[i].level == level {
+                    built[i].unlocked = true
+                }
+            }
+        }
+        return built
     }
 
     private var levelHeader: some View {

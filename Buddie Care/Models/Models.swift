@@ -346,7 +346,7 @@ struct Course: Identifiable, Hashable {
     let title: String
     let durationMinutes: Int
     var progressPercent: Int
-    let unlocked: Bool
+    var unlocked: Bool
     let summary: String
     var requiresPhysicalCertification: Bool = false
     var modules: [CourseModuleData] = []
