@@ -4,6 +4,7 @@ struct ElderlyProfileView: View {
     @Environment(AppState.self) private var appState
     @Environment(\.largeTextEnabled) private var largeText
     @State private var notificationsEnabled = true
+    @State private var showEditSheet = false
     private var et: BCElderlyType { BCElderlyType(large: largeText) }
 
     var body: some View {
@@ -57,6 +58,25 @@ struct ElderlyProfileView: View {
 
                     BCCard {
                         VStack(spacing: 0) {
+                            HStack {
+                                Label("Mijn gegevens", systemImage: "person.text.rectangle.fill")
+                                    .font(et.body)
+                                    .foregroundStyle(BCColors.textPrimary)
+                                Spacer()
+                                Button {
+                                    showEditSheet = true
+                                } label: {
+                                    Label("Aanpassen", systemImage: "pencil")
+                                        .font(BCTypography.captionEmphasized)
+                                        .foregroundStyle(BCColors.primary)
+                                        .padding(.horizontal, BCSpacing.sm)
+                                        .padding(.vertical, BCSpacing.xs)
+                                        .background(Capsule().fill(BCColors.primary.opacity(0.08)))
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            .padding(.bottom, BCSpacing.sm)
+                            Divider()
                             ProfileRow(icon: "phone.fill", label: "Telefoonnummer", value: appState.elderlyUser.phoneNumber)
                             Divider().padding(.leading, 36)
                             ProfileRow(icon: "house.fill", label: "Adres", value: appState.elderlyUser.address)
@@ -67,6 +87,9 @@ struct ElderlyProfileView: View {
                         }
                     }
                     .padding(.horizontal, BCSpacing.lg)
+                    .sheet(isPresented: $showEditSheet) {
+                        EditProfileSheet()
+                    }
 
                     BCCard {
                         VStack(spacing: 0) {
@@ -154,6 +177,95 @@ private struct TrustPill: View {
                 Capsule().fill(BCColors.surfaceMuted)
             )
             .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - Edit sheet
+
+private struct EditProfileSheet: View {
+    @Environment(AppState.self) private var appState
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.largeTextEnabled) private var largeText
+    private var et: BCElderlyType { BCElderlyType(large: largeText) }
+
+    @State private var phone: String = ""
+    @State private var address: String = ""
+    @State private var allergiesText: String = ""
+    @State private var medication: String = ""
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: BCSpacing.md) {
+                    editField(icon: "phone.fill", label: "Telefoonnummer",
+                              placeholder: "06 12 34 56 78", text: $phone,
+                              keyboard: .phonePad)
+                    editField(icon: "house.fill", label: "Adres",
+                              placeholder: "Straat, huisnummer, stad", text: $address)
+                    editField(icon: "exclamationmark.triangle.fill", label: "Allergieën",
+                              placeholder: "Bijv. Penicilline, noten", text: $allergiesText)
+                    editField(icon: "pills.fill", label: "Medicatie",
+                              placeholder: "Bijv. 2x daags bloeddrukpil", text: $medication,
+                              multiline: true)
+                }
+                .padding(BCSpacing.lg)
+            }
+            .background(BCColors.background.ignoresSafeArea())
+            .navigationTitle("Gegevens aanpassen")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Annuleer") { dismiss() }.tint(BCColors.primary)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Opslaan") { save() }
+                        .font(BCTypography.bodyEmphasized)
+                        .tint(BCColors.primary)
+                }
+            }
+        }
+        .onAppear {
+            phone = appState.elderlyUser.phoneNumber
+            address = appState.elderlyUser.address
+            allergiesText = appState.elderlyUser.allergies.joined(separator: ", ")
+            medication = appState.elderlyUser.medicationNotes
+        }
+    }
+
+    @ViewBuilder
+    private func editField(icon: String, label: String, placeholder: String,
+                           text: Binding<String>, keyboard: UIKeyboardType = .default,
+                           multiline: Bool = false) -> some View {
+        BCCard {
+            VStack(alignment: .leading, spacing: BCSpacing.sm) {
+                Label(label, systemImage: icon)
+                    .font(et.caption)
+                    .foregroundStyle(BCColors.textSecondary)
+                if multiline {
+                    TextField(placeholder, text: text, axis: .vertical)
+                        .lineLimit(3, reservesSpace: true)
+                        .font(et.body)
+                        .foregroundStyle(BCColors.textPrimary)
+                } else {
+                    TextField(placeholder, text: text)
+                        .keyboardType(keyboard)
+                        .font(et.body)
+                        .foregroundStyle(BCColors.textPrimary)
+                }
+            }
+        }
+    }
+
+    private func save() {
+        let allergies = allergiesText
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        appState.elderlyUser.phoneNumber = phone
+        appState.elderlyUser.address = address
+        appState.elderlyUser.allergies = allergies
+        appState.elderlyUser.medicationNotes = medication
+        dismiss()
     }
 }
 

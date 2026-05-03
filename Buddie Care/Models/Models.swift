@@ -277,10 +277,10 @@ struct ElderlyUser: Identifiable, Hashable {
     let id: UUID
     let firstName: String
     let lastName: String
-    let address: String
+    var address: String
     let coordinate: CLLocationCoordinate2D
     let dateOfBirth: Date
-    let phoneNumber: String
+    var phoneNumber: String
     var allergies: [String]
     var medicationNotes: String
     var favoriteBuddyIDs: [UUID]
