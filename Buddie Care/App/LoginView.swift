@@ -48,6 +48,8 @@ struct LoginView: View {
                         registerSection
                     }
 
+                    demoShortcut
+
                     if let error = errorMessage {
                         HStack(spacing: BCSpacing.sm) {
                             Image(systemName: "exclamationmark.circle.fill")
@@ -240,6 +242,60 @@ struct LoginView: View {
     private var registerFormValid: Bool {
         !firstName.isEmpty && !lastName.isEmpty &&
         !registerEmail.isEmpty && registerPassword.count >= 8
+    }
+
+    // MARK: - Demo shortcut
+
+    private var demoShortcut: some View {
+        VStack(spacing: BCSpacing.sm) {
+            HStack {
+                Rectangle().frame(height: 1).foregroundStyle(BCColors.border)
+                Text("of")
+                    .font(BCTypography.caption)
+                    .foregroundStyle(BCColors.textTertiary)
+                    .fixedSize()
+                Rectangle().frame(height: 1).foregroundStyle(BCColors.border)
+            }
+            .padding(.horizontal, BCSpacing.lg)
+
+            Menu {
+                Button {
+                    goDemo(role: .buddy)
+                } label: {
+                    Label("Demo — Buddy kaart", systemImage: "map.fill")
+                }
+                Button {
+                    goDemo(role: .elderly)
+                } label: {
+                    Label("Demo — Oudere", systemImage: "figure.wave")
+                }
+                Button {
+                    goDemo(role: .family)
+                } label: {
+                    Label("Demo — Familie", systemImage: "house.and.flag.fill")
+                }
+            } label: {
+                HStack(spacing: BCSpacing.sm) {
+                    Image(systemName: "bolt.fill")
+                        .font(.system(size: 12, weight: .semibold))
+                    Text("Demo overslaan")
+                        .font(BCTypography.captionEmphasized)
+                }
+                .foregroundStyle(BCColors.textSecondary)
+                .padding(.horizontal, BCSpacing.md)
+                .padding(.vertical, BCSpacing.sm)
+                .background(Capsule().fill(BCColors.surfaceMuted))
+            }
+            .padding(.bottom, BCSpacing.lg)
+        }
+    }
+
+    private func goDemo(role: UserRole) {
+        appState.isDemoMode = true
+        appState.isOnboardingComplete = true
+        appState.currentRole = role
+        appState.showLogin = false
+        appState.hasSeenSplash = true
     }
 
     // MARK: - Actions
