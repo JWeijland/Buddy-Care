@@ -299,16 +299,16 @@ final class TaskService {
     // MARK: - Realtime: live taakupdates voor elderly/familie
 
     func subscribeToTaskUpdates(elderlyId: UUID, onUpdate: @escaping (DBTask) -> Void) async {
-        let channel = await supabase.realtimeV2.channel("tasks-\(elderlyId.uuidString)")
+        let channel = supabase.realtimeV2.channel("tasks-\(elderlyId.uuidString)")
 
-        let changes = await channel.postgresChange(
+        let changes = channel.postgresChange(
             AnyAction.self,
             schema: "public",
             table: "tasks",
-            filter: "elderly_id=eq.\(elderlyId.uuidString)"
+            filter: .eq("elderly_id", value: elderlyId.uuidString)
         )
 
-        await channel.subscribe()
+        try? await channel.subscribeWithError()
 
         Task {
             for await change in changes {
