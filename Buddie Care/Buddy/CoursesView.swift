@@ -15,7 +15,7 @@ struct CoursesView: View {
                         .padding(.top, BCSpacing.md)
 
                     ForEach(ServiceLevel.allCases.prefix(4)) { level in
-                        let coursesForLevel = MockData.courses.filter { $0.level == level }
+                        let coursesForLevel = appliedCourses.filter { $0.level == level }
                         if !coursesForLevel.isEmpty {
                             VStack(alignment: .leading, spacing: BCSpacing.sm) {
                                 HStack {
@@ -50,6 +50,20 @@ struct CoursesView: View {
         .background(BCColors.background.ignoresSafeArea())
         .sheet(item: $selectedCourse) { course in
             CourseDetailView(course: course)
+        }
+    }
+
+    private var appliedCourses: [Course] {
+        MockData.courses.map { course in
+            let done = appState.completedModules[course.id] ?? []
+            var c = course
+            for i in c.modules.indices {
+                c.modules[i].isCompleted = done.contains(c.modules[i].id)
+            }
+            let total = c.modules.count
+            let completed = c.modules.filter(\.isCompleted).count
+            c.progressPercent = total > 0 ? Int(Double(completed) / Double(total) * 100) : 0
+            return c
         }
     }
 
@@ -285,10 +299,10 @@ struct CourseDetailView: View {
     // MARK: - Module completion & auto-advance
 
     private func handleModuleComplete(_ mod: CourseModuleData) {
-        // Mark done
         if let idx = courseState.modules.firstIndex(where: { $0.id == mod.id }) {
             courseState.modules[idx].isCompleted = true
         }
+        appState.recordModuleComplete(courseId: courseState.id, moduleId: mod.id)
         activeModule = nil
 
         let next = courseState.modules.first(where: { !$0.isCompleted })

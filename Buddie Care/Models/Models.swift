@@ -335,7 +335,7 @@ struct Course: Identifiable, Hashable {
     let level: ServiceLevel
     let title: String
     let durationMinutes: Int
-    let progressPercent: Int
+    var progressPercent: Int
     let unlocked: Bool
     let summary: String
     var requiresPhysicalCertification: Bool = false

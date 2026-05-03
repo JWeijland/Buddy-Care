@@ -43,6 +43,24 @@ final class AppState {
     // Buddy availability
     var isAvailableNow: Bool = true
 
+    // Course progress: courseId → set of completed moduleIds
+    var completedModules: [UUID: Set<UUID>] = [:]
+
+    private let taskService = TaskService()
+
+    func recordModuleComplete(courseId: UUID, moduleId: UUID) {
+        completedModules[courseId, default: []].insert(moduleId)
+        if !isDemoMode, let userId = realUserId {
+            Task {
+                try? await taskService.markModuleComplete(
+                    buddyId: userId,
+                    courseId: courseId.uuidString,
+                    moduleId: moduleId.uuidString
+                )
+            }
+        }
+    }
+
     // MARK: - Initialization (called on app start)
 
     func initialize() async {
