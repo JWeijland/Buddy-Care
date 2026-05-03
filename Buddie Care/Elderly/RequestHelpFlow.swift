@@ -9,6 +9,8 @@ struct RequestHelpFlow: View {
     @State private var selectedTiming: TaskTiming? = nil
     @State private var note: String = ""
     @State private var showingConfirmation = false
+    @State private var customDate: Date = Date().addingTimeInterval(3600)
+    @State private var useCustomDate: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -110,25 +112,56 @@ struct RequestHelpFlow: View {
                         title: "Zo snel mogelijk",
                         subtitle: "Een buddy in de buurt komt eraan",
                         icon: "bolt.fill",
-                        isSelected: selectedTiming == .now
+                        isSelected: selectedTiming == .now && !useCustomDate
                     ) {
+                        useCustomDate = false
                         selectedTiming = .now
                     }
                     TimingTile(
                         title: "Vandaag om 16:00",
                         subtitle: "Plan vandaag in",
                         icon: "clock.fill",
-                        isSelected: selectedTiming == .today(hour: 16)
+                        isSelected: selectedTiming == .today(hour: 16) && !useCustomDate
                     ) {
+                        useCustomDate = false
                         selectedTiming = .today(hour: 16)
                     }
                     TimingTile(
                         title: "Morgen om 10:00",
                         subtitle: "Plan voor morgen",
                         icon: "calendar",
-                        isSelected: selectedTiming == .scheduled(date: tomorrowAt10)
+                        isSelected: selectedTiming == .scheduled(date: tomorrowAt10) && !useCustomDate
                     ) {
+                        useCustomDate = false
                         selectedTiming = .scheduled(date: tomorrowAt10)
+                    }
+                    TimingTile(
+                        title: "Zelf kiezen",
+                        subtitle: "Kies een datum en tijd",
+                        icon: "calendar.badge.clock",
+                        isSelected: useCustomDate
+                    ) {
+                        useCustomDate = true
+                        selectedTiming = .scheduled(date: customDate)
+                    }
+
+                    if useCustomDate {
+                        DatePicker(
+                            "",
+                            selection: $customDate,
+                            in: Date()...,
+                            displayedComponents: [.date, .hourAndMinute]
+                        )
+                        .datePickerStyle(.graphical)
+                        .tint(BCColors.primary)
+                        .padding(BCSpacing.md)
+                        .background(
+                            RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous)
+                                .fill(BCColors.surface)
+                        )
+                        .onChange(of: customDate) { _, newDate in
+                            selectedTiming = .scheduled(date: newDate)
+                        }
                     }
                 }
                 .padding(.horizontal, BCSpacing.lg)
