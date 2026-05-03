@@ -1,12 +1,27 @@
 import SwiftUI
 
 struct MyBuddiesView: View {
+    @Environment(AppState.self) private var appState
+
+    private var favoriteBuddies: [BuddyUser] {
+        MockData.allBuddies.filter { appState.favoriteBuddyNames.contains($0.firstName) }
+    }
+
+    private var pastBuddies: [BuddyUser] {
+        let pastNames = Set(appState.taskHistory.compactMap(\.assignedBuddyName))
+        return MockData.allBuddies.filter {
+            pastNames.contains($0.firstName) && !appState.favoriteBuddyNames.contains($0.firstName)
+        }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             BCNavBar(title: "Mijn buddies", subtitle: "Vaste mensen die u kennen")
 
             ScrollView {
                 VStack(alignment: .leading, spacing: BCSpacing.md) {
+
+                    // Favorites
                     Text("Vaste buddies")
                         .font(BCTypography.title3)
                         .foregroundStyle(BCColors.textPrimary)
@@ -18,23 +33,41 @@ struct MyBuddiesView: View {
                         .foregroundStyle(BCColors.textSecondary)
                         .padding(.horizontal, BCSpacing.lg)
 
-                    VStack(spacing: BCSpacing.sm) {
-                        ForEach([MockData.buddyAiyla, MockData.buddyMark]) { buddy in
-                            BuddyRow(buddy: buddy, isFavorite: true)
+                    if favoriteBuddies.isEmpty {
+                        BCCard {
+                            Text("U heeft nog geen vaste buddies. Tik op een eerder bezoek om iemand toe te voegen.")
+                                .font(BCTypography.body)
+                                .foregroundStyle(BCColors.textSecondary)
                         }
-                    }
-                    .padding(.horizontal, BCSpacing.lg)
-
-                    Text("Eerder geholpen")
-                        .font(BCTypography.title3)
-                        .foregroundStyle(BCColors.textPrimary)
                         .padding(.horizontal, BCSpacing.lg)
-                        .padding(.top, BCSpacing.lg)
-
-                    VStack(spacing: BCSpacing.sm) {
-                        BuddyRow(buddy: MockData.buddySophie, isFavorite: false)
+                    } else {
+                        VStack(spacing: BCSpacing.sm) {
+                            ForEach(favoriteBuddies) { buddy in
+                                BuddyRow(buddy: buddy, isFavorite: true) {
+                                    appState.toggleFavorite(buddyName: buddy.firstName)
+                                }
+                            }
+                        }
+                        .padding(.horizontal, BCSpacing.lg)
                     }
-                    .padding(.horizontal, BCSpacing.lg)
+
+                    // Past (not favorited)
+                    if !pastBuddies.isEmpty {
+                        Text("Eerder geholpen")
+                            .font(BCTypography.title3)
+                            .foregroundStyle(BCColors.textPrimary)
+                            .padding(.horizontal, BCSpacing.lg)
+                            .padding(.top, BCSpacing.lg)
+
+                        VStack(spacing: BCSpacing.sm) {
+                            ForEach(pastBuddies) { buddy in
+                                BuddyRow(buddy: buddy, isFavorite: false) {
+                                    appState.toggleFavorite(buddyName: buddy.firstName)
+                                }
+                            }
+                        }
+                        .padding(.horizontal, BCSpacing.lg)
+                    }
                 }
                 .padding(.bottom, BCSpacing.xl)
             }
@@ -44,8 +77,10 @@ struct MyBuddiesView: View {
 }
 
 private struct BuddyRow: View {
+    @Environment(AppState.self) private var appState
     let buddy: BuddyUser
     let isFavorite: Bool
+    let onToggleFavorite: () -> Void
 
     var body: some View {
         BCCard {
@@ -76,14 +111,18 @@ private struct BuddyRow: View {
                     }
                 }
                 Spacer()
-                Button { } label: {
-                    Image(systemName: "phone.fill")
+                Button {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    onToggleFavorite()
+                } label: {
+                    Image(systemName: isFavorite ? "heart.fill" : "heart")
                         .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(isFavorite ? BCColors.danger : BCColors.textTertiary)
                         .frame(width: 44, height: 44)
-                        .background(Circle().fill(BCColors.primary))
+                        .background(Circle().fill(isFavorite ? BCColors.danger.opacity(0.10) : BCColors.surface))
                 }
                 .buttonStyle(.plain)
+                .animation(.easeInOut(duration: 0.2), value: isFavorite)
             }
         }
     }

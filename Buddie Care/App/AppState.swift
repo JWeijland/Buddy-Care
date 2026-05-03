@@ -43,6 +43,24 @@ final class AppState {
     // Buddy availability
     var isAvailableNow: Bool = true
 
+    // Elderly — favorites & ratings
+    var favoriteBuddyNames: Set<String> = ["Aiyla", "Mark"]
+    var taskRatings: [UUID: Int] = [:]
+
+    func toggleFavorite(buddyName: String) {
+        if favoriteBuddyNames.contains(buddyName) {
+            favoriteBuddyNames.remove(buddyName)
+        } else {
+            favoriteBuddyNames.insert(buddyName)
+            showToast(text: "\(buddyName) toegevoegd aan vaste buddies", icon: "heart.fill")
+        }
+    }
+
+    func rateTask(taskId: UUID, stars: Int, body: String) {
+        taskRatings[taskId] = stars
+        elderlySubmitsReview(stars: stars, body: body)
+    }
+
     // Course progress: courseId → set of completed moduleIds
     var completedModules: [UUID: Set<UUID>] = [:]
 
