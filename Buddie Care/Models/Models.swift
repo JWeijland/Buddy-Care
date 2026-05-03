@@ -338,6 +338,7 @@ struct Course: Identifiable, Hashable {
     let progressPercent: Int
     let unlocked: Bool
     let summary: String
+    var requiresPhysicalCertification: Bool = false
     var modules: [CourseModuleData] = []
     var modulesCount: Int { modules.count }
     static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }

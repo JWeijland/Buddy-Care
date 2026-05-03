@@ -112,6 +112,14 @@ private struct CourseRow: View {
                             .font(BCTypography.caption)
                             .foregroundStyle(BCColors.textTertiary)
                         Spacer()
+                        if course.requiresPhysicalCertification {
+                            Label("Praktijktoets", systemImage: "building.2.fill")
+                                .font(.system(size: 11, weight: .semibold))
+                                .foregroundStyle(BCColors.level2)
+                                .padding(.horizontal, 7)
+                                .padding(.vertical, 3)
+                                .background(Capsule().fill(BCColors.level2.opacity(0.1)))
+                        }
                     }
                     if course.unlocked && course.progressPercent > 0 && course.progressPercent < 100 {
                         BCProgressBar(value: Double(course.progressPercent) / 100)
@@ -169,6 +177,10 @@ struct CourseDetailView: View {
 
                     if course.progressPercent > 0 {
                         BCProgressBar(value: Double(course.progressPercent) / 100, label: "Voortgang", color: BCColors.primary)
+                    }
+
+                    if course.requiresPhysicalCertification {
+                        physicalCertBanner
                     }
 
                     BCCard {
@@ -243,6 +255,32 @@ struct CourseDetailView: View {
                 CertificateView(level: course.level, buddyName: appState.buddyUser.fullName)
             }
         }
+    }
+
+    private var physicalCertBanner: some View {
+        HStack(alignment: .top, spacing: BCSpacing.md) {
+            Image(systemName: "building.2.fill")
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundStyle(BCColors.level2)
+                .frame(width: 32)
+            VStack(alignment: .leading, spacing: BCSpacing.xs) {
+                Text("Praktijktoets vereist")
+                    .font(BCTypography.bodyEmphasized)
+                    .foregroundStyle(BCColors.level2)
+                Text("Na het afronden van de e-learning moet je een praktijktoets afleggen bij een erkende Buddy Care-locatie. Locaties worden bekendgemaakt zodra Niveau 2 beschikbaar komt. Na de toets ontvang je het officiële niveau-certificaat.")
+                    .font(BCTypography.caption)
+                    .foregroundStyle(BCColors.textSecondary)
+            }
+        }
+        .padding(BCSpacing.md)
+        .background(
+            RoundedRectangle(cornerRadius: BCRadius.md, style: .continuous)
+                .fill(BCColors.level2.opacity(0.07))
+                .overlay(
+                    RoundedRectangle(cornerRadius: BCRadius.md, style: .continuous)
+                        .stroke(BCColors.level2.opacity(0.3), lineWidth: 1)
+                )
+        )
     }
 
     private func moduleIcon(_ type: ModuleType) -> String {

@@ -12,8 +12,16 @@ final class AppState {
     var currentRole: UserRole? = nil
     var hasSeenSplash: Bool = false
     var isOnboardingComplete: Bool = false
+    var showLogin: Bool = false
 
-    // User data
+    // Auth & initialization
+    var authService = AuthService()
+    var isInitializing: Bool = true
+    var isDemoMode: Bool = false
+    var realUserId: UUID? = nil
+    private let profileService = ProfileService()
+
+    // User data (used by both demo and real mode)
     var elderlyUser: ElderlyUser = MockData.omaRiet
     var buddyUser: BuddyUser = MockData.buddyAiyla
     var familyUser: FamilyUser = MockData.familySandra
@@ -34,6 +42,53 @@ final class AppState {
 
     // Buddy availability
     var isAvailableNow: Bool = true
+
+    // MARK: - Initialization (called on app start)
+
+    func initialize() async {
+        await authService.restoreSession()
+        if let userId = authService.currentUserId {
+            await handleAuthSuccess(userId: userId)
+        }
+        isInitializing = false
+    }
+
+    // MARK: - Auth success handler
+
+    func handleAuthSuccess(userId: UUID, role: UserRole? = nil) async {
+        realUserId = userId
+        if let role = role {
+            currentRole = role
+        } else {
+            do {
+                let profile = try await profileService.fetchProfile(userId: userId)
+                switch profile.role {
+                case "elderly": currentRole = .elderly
+                case "buddy":   currentRole = .buddy
+                case "family":  currentRole = .family
+                default: break
+                }
+            } catch {
+                // Profile not loaded — user stays on auth screen
+                return
+            }
+        }
+        showLogin = false
+        hasSeenSplash = true
+        isOnboardingComplete = true
+    }
+
+    // MARK: - Sign out
+
+    func signOut() async {
+        try? await authService.signOut()
+        realUserId = nil
+        currentRole = nil
+        hasSeenSplash = false
+        isDemoMode = false
+        showLogin = false
+        isOnboardingComplete = false
+    }
 
     // MARK: - Navigation
 

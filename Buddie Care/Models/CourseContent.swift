@@ -163,7 +163,7 @@ In deze video zie je een realistisch oefengesprek tussen een buddy en Riet (78 j
     static let course_veiligheid: Course = Course(
         id: UUID(), level: .zero,
         title: "Veiligheid thuis",
-        durationMinutes: 45,
+        durationMinutes: 60,
         progressPercent: 0,
         unlocked: true,
         summary: "Valrisico's herkennen, omgaan met noodsituaties en hoe je een veilige thuisomgeving signaleert en rapporteert.",
@@ -212,6 +212,9 @@ Na elk incident — hoe klein ook — schrijf je een uitgebreide notitie. Noteer
 Deze notitie is de officiële overdracht naar familie en eventuele zorgprofessionals. In geval van een klacht of onderzoek is dit ook de enige schriftelijke verslaglegging die bestaat.
 """)
             ]),
+            video("Eerste hulp bij een val: simulatie", symbol: "figure.fall", duration: 10, """
+In deze video zie je een gesimuleerde noodsituatie: een buddy arriveert en vindt een oudere op de grond. Stap voor stap wordt getoond hoe je bewustzijn controleert, geruststelt, de juiste contacten waarschuwt (112 en familie), de wachtsituatie begeleidt en de incidentrapportage invult. Aansluitend: een korte instructie over de basishouding (stabiele zijligging) als iemand buiten bewustzijn is maar normaal ademt.
+"""),
             quiz("Eindtoets — Veiligheid thuis", symbol: "cross.case.fill", [
                 q("Wat is de gevaarlijkste ruimte voor vallen bij ouderen?",
                   ["Slaapkamer", "Woonkamer", "Badkamer", "Keuken"], correct: 2,
@@ -237,7 +240,7 @@ Deze notitie is de officiële overdracht naar familie en eventuele zorgprofessio
     static let course_privacy: Course = Course(
         id: UUID(), level: .zero,
         title: "Privacy & AVG in de zorg",
-        durationMinutes: 30,
+        durationMinutes: 45,
         progressPercent: 0,
         unlocked: true,
         summary: "Wat mag je weten, delen en bewaren? Geheimhouding, digitale privacy en jouw verantwoordelijkheden als buddy.",
@@ -262,6 +265,23 @@ Plaats nooit iets op social media over je werk als buddy — ook niet anoniem of
 De Buddy Care-app gebruikt versleutelde verbindingen voor alle communicatie. Gebruik de app alleen op uw eigen apparaat. Deel je inloggegevens niet met anderen — ook niet met een collega-buddy.
 
 Stuur nooit medische informatie via WhatsApp of e-mail. Als de familie via de app communiceert, gebruik dan alleen dat kanaal. Bij een datalek of verlies van je telefoon: meld dit direct via hulp@buddiecare.nl.
+""")
+            ]),
+            reading("Omgaan met verzoeken en grenzen", symbol: "hand.raised.circle.fill", duration: 12, [
+                section("Wat doe je als een cliënt informatie vraagt over anderen?", symbol: "person.fill.questionmark", """
+Soms vraagt een cliënt naar andere cliënten — 'Hoe gaat het met de buurvrouw, help jij haar ook?' Of een familielid vraagt om de notities van een ander familielid in te zien. Het antwoord is altijd: nee.
+
+Iedere cliënt heeft een eigen, afgeschermd dossier. Informatie over de ene persoon deel je nooit met een andere, ook niet als het om hetzelfde gezin gaat. Vriendelijk maar duidelijk: 'Ik mag geen informatie delen over andere cliënten.'
+"""),
+                section("Wanneer mag je informatie delen zonder toestemming?", symbol: "exclamationmark.shield.fill", """
+De AVG kent een uitzondering voor situaties waarbij er ernstig gevaar is voor de cliënt of anderen. Als je overtuigd bent dat iemand in gevaar is (mishandeling, verwaarlozing, suïcidaliteit), mag je informatie doorgeven aan de juiste instantie — zonder toestemming van de cliënt.
+
+Maar dit is een hoge drempel. Twijfel je? Bel Buddy Care. Ga nooit op eigen houtje informatie doorgeven buiten de app om — er zijn hiervoor meldprotocollen.
+"""),
+                section("Hoe ga je om met een datalek?", symbol: "wifi.exclamationmark", """
+Een datalek betekent dat persoonsgegevens onbedoeld toegankelijk zijn geworden voor onbevoegden: je telefoon verloren, je inloggegevens gedeeld, een screenshot per ongeluk aan de verkeerde persoon gestuurd.
+
+Meld dit onmiddellijk bij Buddy Care via hulp@buddiecare.nl. Buddy Care heeft wettelijk 72 uur om een datalek te melden bij de Autoriteit Persoonsgegevens. Hoe sneller jij meldt, hoe sneller de schade beperkt kan worden.
 """)
             ]),
             quiz("Eindtoets — Privacy & AVG", symbol: "lock.shield.fill", [
@@ -377,7 +397,7 @@ Veel ouderen eten minder omdat eten minder lekker smaakt (minder smaakpapillen),
 
 Presentatie telt: een bord dat er aantrekkelijk uitziet wordt beter gegeten. Kleine porties die aangevuld kunnen worden werken beter dan een overvolle borden die overweldigend aanvoelen.
 """),
-                section("Bijzondere voedingsbehoeften", symbol: "allergens", """
+                section("Bijzondere voedingsbehoeften", symbol: "exclamationmark.circle.fill", """
 Veel ouderen hebben een dieet: zoutarm (bij hartfalen of hoge bloeddruk), suikerarm (diabetes), glutenvrij (coeliakie), of een aangepaste consistentie (bij slikproblemen). Deze informatie staat in het zorgplan of de notities van de cliënt in de app.
 
 Controleer altijd voor het bereiden. Bij twijfel: bel de familie. Geef nooit iets wat niet op het dieetplan staat, ook niet als de cliënt zelf erom vraagt ('een klein koekje kan toch geen kwaad?'). Het risico is soms groter dan het lijkt.
@@ -428,7 +448,7 @@ In deze instructievideo leer je de tekenen van dysfagie (slikproblemen) herkenne
     static let course_valpreventie: Course = Course(
         id: UUID(), level: .one,
         title: "Valpreventie & Ergonomisch werken",
-        durationMinutes: 55,
+        durationMinutes: 70,
         progressPercent: 0,
         unlocked: true,
         summary: "Valrisico's systematisch in kaart brengen, de thuisomgeving aanpassen en zelf ergonomisch werken zonder rugklachten.",
@@ -467,6 +487,9 @@ SBAR staat voor Situation, Background, Assessment, Recommendation — een commun
 Voorbeeld: S — 'Mevrouw is vanavond twee keer bijna gevallen.' B — 'Ze heeft nieuwe medicatie gekregen vorige week.' A — 'Ze lijkt duizeliger dan normaal, vooral bij het opstaan.' R — 'Ik adviseer contact op te nemen met de huisarts over de medicatie.'
 """)
             ]),
+            video("Ergonomisch tillen: demonstratie", symbol: "figure.strengthtraining.traditional", duration: 12, """
+In deze demonstratievideo zie je twee scenarios: (1) een buddy die een cliënt helpt opstaan uit een diepe fauteuil met de juiste techniek (voeten plat, naar voren schuiven, samen omhoog), en (2) een buddy die een voorwerp van de grond pakt met correcte rughouding. Je ziet ook hoe je herkenning van orthostatische hypotensie eruitziet in de praktijk en hoe je dit meldt.
+"""),
             quiz("Eindtoets — Valpreventie & Ergonomisch werken", symbol: "figure.walk.circle.fill", [
                 q("Wat is orthostatische hypotensie?",
                   ["Een type val waarbij iemand naar achteren valt", "Een plotselinge bloeddrukdaling bij snel opstaan, die duizeligheid veroorzaakt", "Een aandoening aan de knie door overbelasting", "Hoge bloeddruk door stress"], correct: 1,
@@ -496,6 +519,7 @@ Voorbeeld: S — 'Mevrouw is vanavond twee keer bijna gevallen.' B — 'Ze heeft
         progressPercent: 0,
         unlocked: false,
         summary: "Medicatieschema's lezen, toezicht houden op correcte inname, bijwerkingen herkennen en fouten veilig melden.",
+        requiresPhysicalCertification: true,
         modules: [
             reading("Medicatiesoorten en toedieningsvormen", symbol: "pills.fill", duration: 18, [
                 section("Soorten medicatie bij ouderen", symbol: "pills.fill", """
@@ -587,6 +611,7 @@ Bij een serieuze fout (dubbele dosis gegeven, verkeerde medicatie) bel je ook de
         progressPercent: 0,
         unlocked: false,
         summary: "Privacy en waardigheid tijdens persoonlijke verzorging, juiste techniek bij de wastafel, huidverzorging bij ouderen.",
+        requiresPhysicalCertification: true,
         modules: [
             reading("Privacy en waardigheid", symbol: "hand.raised.fill", duration: 14, [
                 section("Zelfbeschikking is heilig", symbol: "hand.raised.fill", """
@@ -655,10 +680,11 @@ In deze instructievideo zie je een complete wasbeurt aan de wastafel in real-tim
     static let course_signalering: Course = Course(
         id: UUID(), level: .two,
         title: "Signalering & Rapportage",
-        durationMinutes: 65,
+        durationMinutes: 80,
         progressPercent: 0,
         unlocked: false,
         summary: "Wat is signaleren in de zorg, welke veranderingen zijn alarmerend, en hoe schrijf je een professionele rapportage?",
+        requiresPhysicalCertification: true,
         modules: [
             reading("Wat is signaleren?", symbol: "eye.fill", duration: 14, [
                 section("Signaleren als kerncompetentie", symbol: "eye.fill", """
@@ -694,6 +720,9 @@ Schrijf nooit: oordelen over de cliënt ('was lastig'), veronderstellingen als f
 Schrijf ook niet wat je niet zeker weet zonder dat duidelijk te maken. 'Ik denk dat...' of 'mogelijk...' zijn toegestaan als je aangeeft dat het een observatie is, geen vastgesteld feit.
 """)
             ]),
+            video("SOAP-overdracht in de praktijk", symbol: "doc.text.fill", duration: 12, """
+In deze video zie je hoe een buddy aan het einde van een bezoek een volledige SOAP-rapportage samenstelt en invoert in de app. Je ziet de vier stappen in real-time: Subjectief (wat zei de cliënt), Objectief (wat observeerde de buddy), Assessment (inschatting), Plan (vervolgadvies). Ook wordt getoond wanneer je direct alarmeert versus wanneer je regulier rapporteert.
+"""),
             quiz("Eindtoets — Signalering & Rapportage", symbol: "doc.badge.plus", [
                 q("Wat is het verschil tussen signaleren en diagnosticeren?",
                   ["Er is geen verschil", "Signaleren is observeren en doorgeven; diagnosticeren is een medisch oordeel vellen", "Diagnosticeren doe je als buddy, signaleren doet de arts", "Signaleren mag alleen een verpleegkundige"], correct: 1,
@@ -723,6 +752,7 @@ Schrijf ook niet wat je niet zeker weet zonder dat duidelijk te maken. 'Ik denk 
         progressPercent: 0,
         unlocked: false,
         summary: "Alleen na Verzorgende-IG diploma of HBO-V jaar 2+. Volledige ADL, stomazorg en niet-complexe wondzorg.",
+        requiresPhysicalCertification: true,
         modules: [
             video("Introductie ADL-zorg", symbol: "heart.text.square.fill", duration: 10, """
 Welkom bij het Niveau 3 traject. Dit traject is uitsluitend toegankelijk voor buddies met een Verzorgende-IG diploma of HBO-V studenten vanaf jaar 2. In deze video krijg je een overzicht van alle ADL-handelingen die vallen binnen Niveau 3, de wettelijke kaders (Wet BIG), en hoe de samenwerking met BIG-geregistreerde begeleiders werkt.

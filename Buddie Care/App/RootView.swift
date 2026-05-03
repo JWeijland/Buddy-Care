@@ -6,12 +6,18 @@ struct RootView: View {
     var body: some View {
         ZStack {
             Group {
-                if !appState.hasSeenSplash {
+                if appState.isInitializing {
+                    initLoadingScreen
+                } else if appState.showLogin {
+                    LoginView()
+                } else if !appState.hasSeenSplash {
                     SplashView {
                         withAnimation(.easeInOut(duration: 0.35)) {
+                            appState.showLogin = true
                             appState.hasSeenSplash = true
                         }
                     } onDemoMap: {
+                        appState.isDemoMode = true
                         appState.isOnboardingComplete = true
                         appState.currentRole = .buddy
                         withAnimation(.easeInOut(duration: 0.35)) {
@@ -33,6 +39,8 @@ struct RootView: View {
             }
             .animation(.easeInOut(duration: 0.25), value: appState.currentRole)
             .animation(.easeInOut(duration: 0.35), value: appState.hasSeenSplash)
+            .animation(.easeInOut(duration: 0.2), value: appState.isInitializing)
+            .animation(.easeInOut(duration: 0.25), value: appState.showLogin)
 
             // Global toast overlay
             if let toast = appState.toastMessage {
@@ -48,6 +56,26 @@ struct RootView: View {
             }
         }
         .animation(.spring(response: 0.35), value: appState.toastMessage != nil)
+        .task { await appState.initialize() }
+    }
+
+    private var initLoadingScreen: some View {
+        ZStack {
+            BCColors.primary.ignoresSafeArea()
+            VStack(spacing: BCSpacing.xl) {
+                ZStack {
+                    Circle()
+                        .fill(BCColors.accent.opacity(0.18))
+                        .frame(width: 96, height: 96)
+                    Image(systemName: "heart.text.square.fill")
+                        .font(.system(size: 52, weight: .semibold))
+                        .foregroundStyle(BCColors.accent)
+                }
+                ProgressView()
+                    .tint(.white.opacity(0.7))
+                    .scaleEffect(1.2)
+            }
+        }
     }
 }
 

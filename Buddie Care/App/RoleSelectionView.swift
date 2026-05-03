@@ -86,6 +86,7 @@ struct RoleSelectionView: View {
                 .padding(.top, BCSpacing.lg)
 
             Button {
+                appState.isDemoMode = true
                 appState.hasSeenSplash = true
                 appState.isOnboardingComplete = true
                 appState.currentRole = .buddy
