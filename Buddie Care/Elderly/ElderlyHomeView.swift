@@ -38,13 +38,6 @@ struct ElderlyHomeView: View {
                                     showRequestFlow = true
                                 }
 
-                                BCBigTile(
-                                    title: "Mijn vaste buddies",
-                                    subtitle: largeText ? nil : "Bel of nodig direct uit",
-                                    icon: "person.2.fill",
-                                    color: BCColors.accent
-                                ) { }
-
                                 if !largeText {
                                     BCBigTile(
                                         title: "Bezoek aan de deur",
