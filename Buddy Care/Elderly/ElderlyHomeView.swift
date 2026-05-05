@@ -126,6 +126,8 @@ struct ElderlyHomeView: View {
                 let tasks = Array(appState.taskHistory.prefix(limit))
                 VStack(spacing: BCSpacing.sm) {
                     ForEach(tasks) { task in
+                        let rated = appState.taskRatings[task.id]
+                        let needsReview = rated == nil && !appState.skippedReviews.contains(task.id)
                         Button { selectedHistoryTask = task } label: {
                             BCCard {
                                 HStack(spacing: BCSpacing.md) {
@@ -156,26 +158,32 @@ struct ElderlyHomeView: View {
                                                 .font(et.caption)
                                                 .foregroundStyle(BCColors.textTertiary)
                                         }
+                                        HStack(spacing: 3) {
+                                            ForEach(1...5, id: \.self) { star in
+                                                Image(systemName: star <= (rated ?? 0) ? "star.fill" : "star")
+                                                    .font(.system(size: 10, weight: .regular))
+                                                    .foregroundStyle(star <= (rated ?? 0) ? BCColors.warning : BCColors.border)
+                                            }
+                                        }
+                                        .padding(.top, 1)
                                     }
                                     Spacer()
-                                    if let stars = appState.taskRatings[task.id] {
-                                        HStack(spacing: 2) {
-                                            Image(systemName: "star.fill")
-                                                .font(.system(size: largeText ? 16 : 11))
-                                                .foregroundStyle(BCColors.warning)
-                                            Text("\(stars)")
-                                                .font(et.caption)
-                                                .foregroundStyle(BCColors.textSecondary)
-                                        }
-                                    } else if !appState.skippedReviews.contains(task.id) {
-                                        Text("Beoordeel")
-                                            .font(BCTypography.captionEmphasized)
-                                            .foregroundStyle(BCColors.primary)
-                                    } else {
-                                        Image(systemName: "chevron.right")
-                                            .font(.system(size: largeText ? 18 : 13, weight: .semibold))
-                                            .foregroundStyle(BCColors.textTertiary)
-                                    }
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: largeText ? 18 : 13, weight: .semibold))
+                                        .foregroundStyle(BCColors.textTertiary)
+                                }
+                            }
+                            .overlay(alignment: .leading) {
+                                if needsReview {
+                                    UnevenRoundedRectangle(
+                                        topLeadingRadius: BCRadius.lg,
+                                        bottomLeadingRadius: BCRadius.lg,
+                                        bottomTrailingRadius: 0,
+                                        topTrailingRadius: 0,
+                                        style: .continuous
+                                    )
+                                    .fill(BCColors.primary)
+                                    .frame(width: 4)
                                 }
                             }
                         }
