@@ -5,6 +5,7 @@ struct RequestHelpFlow: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var step: Int = 0
+    @State private var descriptionText: String = ""
     @State private var selectedCategory: TaskCategory? = nil
     @State private var selectedTiming: TaskTiming? = nil
     @State private var note: String = ""
@@ -73,6 +74,38 @@ struct RequestHelpFlow: View {
                     .foregroundStyle(BCColors.textPrimary)
                     .padding(.horizontal, BCSpacing.lg)
                     .padding(.top, BCSpacing.md)
+
+                // Smart description field
+                VStack(alignment: .leading, spacing: BCSpacing.xs) {
+                    Text("Beschrijf in uw eigen woorden (optioneel)")
+                        .font(et.caption)
+                        .foregroundStyle(BCColors.textSecondary)
+                        .padding(.horizontal, BCSpacing.lg)
+                    TextField("Bijv. \"ik kan niet naar de winkel lopen\"", text: $descriptionText, axis: .vertical)
+                        .lineLimit(2, reservesSpace: true)
+                        .font(et.body)
+                        .padding(BCSpacing.md)
+                        .background(RoundedRectangle(cornerRadius: BCRadius.md, style: .continuous).fill(BCColors.surface))
+                        .overlay(RoundedRectangle(cornerRadius: BCRadius.md, style: .continuous).stroke(BCColors.border, lineWidth: 1))
+                        .padding(.horizontal, BCSpacing.lg)
+                        .onChange(of: descriptionText) { _, text in
+                            if let match = recognizeCategory(from: text) {
+                                selectedCategory = match
+                            }
+                        }
+                    if let match = recognizeCategory(from: descriptionText), !descriptionText.isEmpty {
+                        HStack(spacing: BCSpacing.xs) {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 12, weight: .semibold))
+                            Text("Herkend als: \(match.displayName)")
+                                .font(BCTypography.captionEmphasized)
+                        }
+                        .foregroundStyle(BCColors.primary)
+                        .padding(.horizontal, BCSpacing.lg)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                    }
+                }
+                .animation(.easeInOut(duration: 0.2), value: descriptionText)
 
                 let columns = largeText
                     ? [GridItem(.flexible())]
@@ -377,6 +410,27 @@ struct RequestHelpFlow: View {
             }
         }
     }
+}
+
+// MARK: - Smart category recognition
+
+private func recognizeCategory(from text: String) -> TaskCategory? {
+    guard text.count > 3 else { return nil }
+    let t = text.lowercased()
+    let rules: [(words: [String], category: TaskCategory)] = [
+        (["boodschap", "supermarkt", "winkel", "inkopen", "winkelen", "albert", "jumbo", "halen"],       .groceries),
+        (["medicatie", "medicijn", "pil", "pillen", "tablet", "apotheek", "medicijnen", "bloeddruk"],    .medicationReminder),
+        (["schoon", "opruim", "stofzuig", "poets", "huishoud", "dweilen", "afwas", "rommel"],            .lightCleaning),
+        (["koffie", "gezelschap", "praatje", "praten", "kletsen", "eenzaam", "samen", "spelletje"],      .companionship),
+        (["eten", "maaltijd", "koken", "lunch", "middageten", "avondeten", "soep", "warm maken"],         .mealPrep),
+        (["bed", "opstaan", "aankleden", "uitkleden", "pyjama", "slapen", "liggen"],                     .bedHelp),
+        (["wandel", "lopen", "buiten", "ommetje", "frisse lucht", "park"],                               .walkOutdoors),
+        (["dokter", "ziekenhuis", "afspraak", "arts", "specialist", "fysiotherapeut", "tandarts"],       .appointment),
+    ]
+    for rule in rules {
+        if rule.words.contains(where: { t.contains($0) }) { return rule.category }
+    }
+    return nil
 }
 
 private struct CategoryTile: View {

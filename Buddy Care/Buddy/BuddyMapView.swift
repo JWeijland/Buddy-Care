@@ -11,6 +11,7 @@ struct BuddyMapView: View {
     )
     @State private var selectedTask: ServiceTask? = nil
     @State private var maxLevelFilter: Int = 1
+    @State private var showActiveTask = false
 
     var visibleTasks: [ServiceTask] {
         appState.openTasks.filter { $0.requiredLevel.rawValue <= maxLevelFilter }
@@ -53,11 +54,13 @@ struct BuddyMapView: View {
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
         }
-        .fullScreenCover(item: Binding(
-            get: { appState.activeTaskForBuddy },
-            set: { _ in })
-        ) { task in
-            TaskInProgressView(task: task)
+        .fullScreenCover(isPresented: $showActiveTask) {
+            if let task = appState.activeTaskForBuddy {
+                TaskInProgressView(task: task)
+            }
+        }
+        .onChange(of: appState.activeTaskForBuddy) { _, newValue in
+            if newValue != nil { showActiveTask = true }
         }
     }
 

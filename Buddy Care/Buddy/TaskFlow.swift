@@ -4,8 +4,13 @@ import MapKit
 // MARK: - Task detail sheet (tapped from map)
 
 struct TaskDetailSheet: View {
+    @Environment(AppState.self) private var appState
     let task: ServiceTask
     let onAccept: () -> Void
+
+    private var canAccept: Bool {
+        appState.buddyUser.level.rawValue >= task.requiredLevel.rawValue
+    }
 
     var body: some View {
         ScrollView {
@@ -68,8 +73,20 @@ struct TaskDetailSheet: View {
                     }
                 }
 
-                BCPrimaryButton(title: "Aannemen", icon: "checkmark.circle.fill") {
-                    onAccept()
+                if canAccept {
+                    BCPrimaryButton(title: "Aannemen", icon: "checkmark.circle.fill") {
+                        onAccept()
+                    }
+                } else {
+                    VStack(spacing: BCSpacing.xs) {
+                        BCPrimaryButton(title: "Niveau te laag", icon: "lock.fill") { }
+                            .opacity(0.45)
+                            .disabled(true)
+                        Text("Deze taak vereist \(task.requiredLevel.title). Voltooi eerst de bijbehorende cursussen.")
+                            .font(BCTypography.caption)
+                            .foregroundStyle(BCColors.textTertiary)
+                            .multilineTextAlignment(.center)
+                    }
                 }
 
                 BCSecondaryButton(title: "Naar route bekijken", icon: "map.fill") { }
