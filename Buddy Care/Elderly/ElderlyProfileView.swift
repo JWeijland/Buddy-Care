@@ -42,16 +42,27 @@ struct ElderlyProfileView: View {
                             Label("Tegoed", systemImage: "creditcard.fill")
                                 .font(BCTypography.headline)
                                 .foregroundStyle(BCColors.textPrimary)
-                            HStack(alignment: .firstTextBaseline) {
-                                Text(String(format: "€ %.2f", appState.elderlyUser.creditEuros).replacingOccurrences(of: ".", with: ","))
-                                    .font(BCTypography.title)
-                                    .foregroundStyle(BCColors.primary)
+                            Text(String(format: "€ %.2f", appState.elderlyUser.creditEuros).replacingOccurrences(of: ".", with: ","))
+                                .font(BCTypography.title)
+                                .foregroundStyle(BCColors.primary)
+                            HStack(spacing: BCSpacing.sm) {
+                                Text("Bij elke nieuwe gebruiker via uw link krijgt u € 10 erbij.")
+                                    .font(BCTypography.caption)
+                                    .foregroundStyle(BCColors.textSecondary)
                                 Spacer()
-                                BCStatusPill(label: "Welkom-tegoed", color: BCColors.success)
+                                ShareLink(
+                                    item: referralURL,
+                                    subject: Text("Buddie Care — zorg dichtbij"),
+                                    message: Text("Download de Buddie Care app via mijn persoonlijke link en vraag eenvoudig hulp aan bij jou in de buurt.")
+                                ) {
+                                    Image(systemName: "link")
+                                        .font(.system(size: 15, weight: .semibold))
+                                        .foregroundStyle(BCColors.primary)
+                                        .frame(width: 36, height: 36)
+                                        .background(Circle().fill(BCColors.primary.opacity(0.10)))
+                                }
+                                .buttonStyle(.plain)
                             }
-                            Text("Bij elke nieuwe oma die zich via uw deel-link aanmeldt, krijgt u € 10 erbij.")
-                                .font(BCTypography.caption)
-                                .foregroundStyle(BCColors.textSecondary)
                         }
                     }
                     .padding(.horizontal, BCSpacing.lg)
@@ -65,12 +76,11 @@ struct ElderlyProfileView: View {
                             Button {
                                 showEditSheet = true
                             } label: {
-                                Label("Aanpassen", systemImage: "pencil")
-                                    .font(BCTypography.captionEmphasized)
+                                Image(systemName: "pencil")
+                                    .font(.system(size: 15, weight: .semibold))
                                     .foregroundStyle(BCColors.primary)
-                                    .padding(.horizontal, BCSpacing.sm)
-                                    .padding(.vertical, BCSpacing.xs)
-                                    .background(Capsule().fill(BCColors.primary.opacity(0.08)))
+                                    .frame(width: 36, height: 36)
+                                    .background(Circle().fill(BCColors.primary.opacity(0.10)))
                             }
                             .buttonStyle(.plain)
                         }
@@ -163,6 +173,14 @@ struct ElderlyProfileView: View {
             }
         }
         .background(BCColors.background.ignoresSafeArea())
+    }
+
+    private var referralURL: URL {
+        let slug = (appState.elderlyUser.firstName + appState.elderlyUser.lastName)
+            .lowercased()
+            .filter { $0.isLetter }
+            .prefix(10)
+        return URL(string: "https://buddiecare.nl/uitnodigen/\(slug)")!
     }
 
     private var initials: String {
