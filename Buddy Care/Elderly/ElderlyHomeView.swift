@@ -168,7 +168,9 @@ struct ElderlyHomeView: View {
                                                 .foregroundStyle(BCColors.textSecondary)
                                         }
                                     } else if !appState.skippedReviews.contains(task.id) {
-                                        BCStatusPill(label: "Beoordeel", color: BCColors.warning)
+                                        Text("Beoordeel")
+                                            .font(BCTypography.captionEmphasized)
+                                            .foregroundStyle(BCColors.primary)
                                     } else {
                                         Image(systemName: "chevron.right")
                                             .font(.system(size: largeText ? 18 : 13, weight: .semibold))
