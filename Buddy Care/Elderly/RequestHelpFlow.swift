@@ -7,6 +7,7 @@ struct RequestHelpFlow: View {
     @State private var step: Int = 0
     @State private var descriptionText: String = ""
     @State private var selectedCategory: TaskCategory? = nil
+    @State private var otherDescription: String = ""
     @State private var selectedTiming: TaskTiming? = nil
     @State private var note: String = ""
     @State private var showingConfirmation = false
@@ -122,7 +123,42 @@ struct RequestHelpFlow: View {
                 }
                 .padding(.horizontal, BCSpacing.lg)
 
-                if let cat = selectedCategory {
+                if selectedCategory == .other {
+                    VStack(alignment: .leading, spacing: BCSpacing.xs) {
+                        Text("Beschrijf wat er nodig is")
+                            .font(et.caption)
+                            .foregroundStyle(BCColors.textSecondary)
+                            .padding(.horizontal, BCSpacing.lg)
+                        TextField("Bijv. \"helpen met douchen en aankleden\"", text: $otherDescription, axis: .vertical)
+                            .lineLimit(3, reservesSpace: true)
+                            .font(et.body)
+                            .padding(BCSpacing.md)
+                            .background(RoundedRectangle(cornerRadius: BCRadius.md, style: .continuous).fill(BCColors.surface))
+                            .overlay(RoundedRectangle(cornerRadius: BCRadius.md, style: .continuous).stroke(
+                                otherDescription.isEmpty ? BCColors.border : BCColors.primary, lineWidth: otherDescription.isEmpty ? 1 : 1.5
+                            ))
+                            .padding(.horizontal, BCSpacing.lg)
+                        if !otherDescription.isEmpty {
+                            let level = recognizeLevel(from: otherDescription)
+                            HStack(spacing: BCSpacing.sm) {
+                                Image(systemName: "sparkles")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundStyle(BCColors.primary)
+                                Text("Waarschijnlijk niveau:")
+                                    .font(BCTypography.caption)
+                                    .foregroundStyle(BCColors.textSecondary)
+                                BCLevelBadge(level: level)
+                                Text("— \(level.summary.components(separatedBy: ",").first ?? level.title)")
+                                    .font(BCTypography.caption)
+                                    .foregroundStyle(BCColors.textTertiary)
+                                    .lineLimit(1)
+                            }
+                            .padding(.horizontal, BCSpacing.lg)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                        }
+                    }
+                    .animation(.easeInOut(duration: 0.2), value: otherDescription)
+                } else if let cat = selectedCategory {
                     BCCard {
                         VStack(alignment: .leading, spacing: BCSpacing.xs) {
                             HStack {
@@ -384,7 +420,7 @@ struct RequestHelpFlow: View {
 
     private var canContinue: Bool {
         switch step {
-        case 0: return selectedCategory != nil
+        case 0: return selectedCategory != nil && (selectedCategory != .other || !otherDescription.isEmpty)
         case 1: return selectedTiming != nil && (!isRecurring || recurringEndDate > Date())
         case 2: return true
         default: return false
@@ -401,7 +437,12 @@ struct RequestHelpFlow: View {
 
     private func confirm() {
         guard let cat = selectedCategory, let timing = selectedTiming else { return }
-        appState.requestHelp(category: cat, timing: timing, note: note, recurringSchedule: recurringSchedule)
+        let finalNote = cat == .other && !otherDescription.isEmpty
+            ? (otherDescription + (note.isEmpty ? "" : "\n\(note)"))
+            : note
+        let levelOverride = cat == .other ? recognizeLevel(from: otherDescription) : nil
+        appState.requestHelp(category: cat, timing: timing, note: finalNote,
+                             recurringSchedule: recurringSchedule, levelOverride: levelOverride)
         dismiss()
         // Simulate buddy accepting after a brief delay
         if let task = appState.activeTaskForElderly {
@@ -412,7 +453,20 @@ struct RequestHelpFlow: View {
     }
 }
 
-// MARK: - Smart category recognition
+// MARK: - Smart recognition
+
+private func recognizeLevel(from text: String) -> ServiceLevel {
+    let t = text.lowercased()
+    let level3 = ["stoma", "katheter", "wond", "injectie", "insuline spuit", "big-", "verpleeg", "adl volledige", "helpende plus"]
+    let level2 = ["douchen", "wassen intiem", "schaamstreek", "steunkousen", "medicatie toedienen", "medicijnen geven",
+                  "volledige verzorging", "persoonlijke verzorging", "scheren", "intieme"]
+    let level1 = ["opstaan", "toilet", "aankleden", "uitkleden", "naar bed helpen", "bed helpen",
+                  "maaltijd bereiden", "eten geven", "lopen helpen", "rollator", "rolstoel", "mobiliteit"]
+    if level3.contains(where: { t.contains($0) }) { return .three }
+    if level2.contains(where: { t.contains($0) }) { return .two }
+    if level1.contains(where: { t.contains($0) }) { return .one }
+    return .zero
+}
 
 private func recognizeCategory(from text: String) -> TaskCategory? {
     guard text.count > 3 else { return nil }

@@ -169,14 +169,15 @@ final class AppState {
 
     // MARK: - Task actions
 
-    func requestHelp(category: TaskCategory, timing: TaskTiming, note: String, recurringSchedule: RecurringSchedule? = nil) {
+    func requestHelp(category: TaskCategory, timing: TaskTiming, note: String,
+                     recurringSchedule: RecurringSchedule? = nil, levelOverride: ServiceLevel? = nil) {
         var task = ServiceTask(
             id: UUID(),
             elderlyName: elderlyUser.firstName,
             elderlyAddress: elderlyUser.address,
             coordinate: elderlyUser.coordinate,
             category: category,
-            requiredLevel: category.minimumLevel,
+            requiredLevel: levelOverride ?? category.minimumLevel,
             timing: timing,
             note: note,
             priceCents: category.suggestedPriceCents,
