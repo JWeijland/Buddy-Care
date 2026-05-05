@@ -124,66 +124,63 @@ struct ElderlyHomeView: View {
             } else {
                 let limit = largeText ? 2 : 5
                 let tasks = Array(appState.taskHistory.prefix(limit))
-                VStack(spacing: 0) {
-                    ForEach(Array(tasks.enumerated()), id: \.element.id) { index, task in
+                VStack(spacing: BCSpacing.sm) {
+                    ForEach(tasks) { task in
                         Button { selectedHistoryTask = task } label: {
-                            HStack(spacing: BCSpacing.md) {
-                                let iconSize: CGFloat = largeText ? 52 : 44
-                                Image(systemName: task.category.icon)
-                                    .font(.system(size: largeText ? 28 : 22, weight: .semibold))
-                                    .foregroundStyle(BCColors.primary)
-                                    .frame(width: iconSize, height: iconSize)
-                                    .background(Circle().fill(BCColors.primary.opacity(0.10)))
-                                VStack(alignment: .leading, spacing: largeText ? 5 : 2) {
-                                    Text(task.category.displayName)
-                                        .font(et.body)
-                                        .foregroundStyle(BCColors.textPrimary)
-                                    if let buddy = task.assignedBuddyName {
-                                        HStack(spacing: BCSpacing.xs) {
-                                            Text("Met \(buddy)")
-                                                .font(et.caption)
-                                                .foregroundStyle(BCColors.textSecondary)
-                                            if appState.favoriteBuddyNames.contains(buddy) {
-                                                Image(systemName: "heart.fill")
-                                                    .font(.system(size: largeText ? 13 : 10))
-                                                    .foregroundStyle(BCColors.danger)
+                            BCCard {
+                                HStack(spacing: BCSpacing.md) {
+                                    let iconSize: CGFloat = largeText ? 52 : 44
+                                    Image(systemName: task.category.icon)
+                                        .font(.system(size: largeText ? 28 : 22, weight: .semibold))
+                                        .foregroundStyle(BCColors.primary)
+                                        .frame(width: iconSize, height: iconSize)
+                                        .background(Circle().fill(BCColors.primary.opacity(0.10)))
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(task.category.displayName)
+                                            .font(et.body)
+                                            .foregroundStyle(BCColors.textPrimary)
+                                        if let buddy = task.assignedBuddyName {
+                                            HStack(spacing: BCSpacing.xs) {
+                                                Text("Met \(buddy)")
+                                                    .font(et.caption)
+                                                    .foregroundStyle(BCColors.textSecondary)
+                                                if appState.favoriteBuddyNames.contains(buddy) {
+                                                    Image(systemName: "heart.fill")
+                                                        .font(.system(size: largeText ? 13 : 10))
+                                                        .foregroundStyle(BCColors.danger)
+                                                }
                                             }
                                         }
+                                        if let date = task.completedAt {
+                                            Text(relativeFormatter.localizedString(for: date, relativeTo: Date()))
+                                                .font(et.caption)
+                                                .foregroundStyle(BCColors.textTertiary)
+                                        }
                                     }
-                                    if !largeText, let date = task.completedAt {
-                                        Text(relativeFormatter.localizedString(for: date, relativeTo: Date()))
-                                            .font(et.caption)
+                                    Spacer()
+                                    if let stars = appState.taskRatings[task.id] {
+                                        HStack(spacing: 2) {
+                                            Image(systemName: "star.fill")
+                                                .font(.system(size: largeText ? 16 : 11))
+                                                .foregroundStyle(BCColors.warning)
+                                            Text("\(stars)")
+                                                .font(et.caption)
+                                                .foregroundStyle(BCColors.textSecondary)
+                                        }
+                                    } else if !appState.skippedReviews.contains(task.id) {
+                                        BCStatusPill(label: "Beoordeel", color: BCColors.warning)
+                                    } else {
+                                        Image(systemName: "chevron.right")
+                                            .font(.system(size: largeText ? 18 : 13, weight: .semibold))
                                             .foregroundStyle(BCColors.textTertiary)
                                     }
                                 }
-                                Spacer()
-                                if let stars = appState.taskRatings[task.id] {
-                                    HStack(spacing: 2) {
-                                        Image(systemName: "star.fill")
-                                            .font(.system(size: largeText ? 16 : 11))
-                                            .foregroundStyle(BCColors.warning)
-                                        Text("\(stars)")
-                                            .font(et.caption)
-                                            .foregroundStyle(BCColors.textSecondary)
-                                    }
-                                } else {
-                                    Image(systemName: "chevron.right")
-                                        .font(.system(size: largeText ? 18 : 13, weight: .semibold))
-                                        .foregroundStyle(BCColors.textTertiary)
-                                }
                             }
-                            .padding(.horizontal, BCSpacing.lg)
-                            .padding(.vertical, BCSpacing.md)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .buttonStyle(.plain)
-                        if index < tasks.count - 1 {
-                            Divider()
-                                .padding(.leading, BCSpacing.lg)
-                        }
                     }
                 }
-                .background(BCColors.surface)
+                .padding(.horizontal, BCSpacing.lg)
             }
         }
     }
@@ -270,6 +267,7 @@ private struct PastVisitSheet: View {
     }
 
     private var alreadyRated: Bool { appState.taskRatings[task.id] != nil }
+    private var alreadySkipped: Bool { appState.skippedReviews.contains(task.id) }
     private var isFavorite: Bool {
         guard let name = task.assignedBuddyName else { return false }
         return appState.favoriteBuddyNames.contains(name)
@@ -380,7 +378,27 @@ private struct PastVisitSheet: View {
                             }
                         }
                         .padding(.horizontal, BCSpacing.lg)
-                    } else if !submitted {
+                    } else if submitted {
+                        VStack(spacing: BCSpacing.sm) {
+                            Image(systemName: "star.fill")
+                                .font(.system(size: 44))
+                                .foregroundStyle(BCColors.warning)
+                            Text("Bedankt voor uw beoordeling!")
+                                .font(BCTypography.headline)
+                                .foregroundStyle(BCColors.textPrimary)
+                        }
+                        .padding(BCSpacing.xl)
+                    } else if alreadySkipped {
+                        Button {
+                            appState.unskipReview(taskId: task.id)
+                        } label: {
+                            Text("Beoordeling alsnog geven")
+                                .font(BCTypography.caption)
+                                .foregroundStyle(BCColors.primary)
+                                .padding(.vertical, BCSpacing.sm)
+                        }
+                        .buttonStyle(.plain)
+                    } else {
                         VStack(spacing: BCSpacing.md) {
                             Text("Hoe was het bezoek?")
                                 .font(BCTypography.elderlyHeading)
@@ -420,18 +438,19 @@ private struct PastVisitSheet: View {
                                 .padding(.horizontal, BCSpacing.lg)
                                 .transition(.opacity)
                             }
+
+                            Button {
+                                appState.skipReview(taskId: task.id)
+                                dismiss()
+                            } label: {
+                                Text("Beoordeling overslaan")
+                                    .font(BCTypography.caption)
+                                    .foregroundStyle(BCColors.textTertiary)
+                                    .padding(.vertical, BCSpacing.sm)
+                            }
+                            .buttonStyle(.plain)
                         }
                         .animation(.easeInOut(duration: 0.2), value: selectedStars)
-                    } else {
-                        VStack(spacing: BCSpacing.sm) {
-                            Image(systemName: "star.fill")
-                                .font(.system(size: 44))
-                                .foregroundStyle(BCColors.warning)
-                            Text("Bedankt voor uw beoordeling!")
-                                .font(BCTypography.headline)
-                                .foregroundStyle(BCColors.textPrimary)
-                        }
-                        .padding(BCSpacing.xl)
                     }
 
                     Spacer(minLength: BCSpacing.xl)

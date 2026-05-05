@@ -54,6 +54,7 @@ final class AppState {
     // Elderly — favorites & ratings
     var favoriteBuddyNames: Set<String> = ["Aiyla", "Mark"]
     var taskRatings: [UUID: Int] = [:]
+    var skippedReviews: Set<UUID> = []
 
     func toggleFavorite(buddyName: String) {
         if favoriteBuddyNames.contains(buddyName) {
@@ -66,7 +67,16 @@ final class AppState {
 
     func rateTask(taskId: UUID, stars: Int, body: String) {
         taskRatings[taskId] = stars
+        skippedReviews.remove(taskId)
         elderlySubmitsReview(stars: stars, body: body)
+    }
+
+    func skipReview(taskId: UUID) {
+        skippedReviews.insert(taskId)
+    }
+
+    func unskipReview(taskId: UUID) {
+        skippedReviews.remove(taskId)
     }
 
     // Course progress: courseId → set of completed moduleIds
