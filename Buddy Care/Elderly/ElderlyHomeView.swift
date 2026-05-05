@@ -109,10 +109,15 @@ struct ElderlyHomeView: View {
 
     private var upcomingSection: some View {
         VStack(alignment: .leading, spacing: BCSpacing.sm) {
-            Text("Eerder geholpen")
-                .font(et.heading)
-                .foregroundStyle(BCColors.textPrimary)
-                .padding(.horizontal, BCSpacing.lg)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Eerder geholpen")
+                    .font(et.heading)
+                    .foregroundStyle(BCColors.textPrimary)
+                Text("Tik op een bezoek om te beoordelen")
+                    .font(et.caption)
+                    .foregroundStyle(BCColors.textTertiary)
+            }
+            .padding(.horizontal, BCSpacing.lg)
 
             if appState.taskHistory.isEmpty {
                 BCCard {
