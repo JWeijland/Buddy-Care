@@ -79,6 +79,12 @@ final class AppState {
         skippedReviews.remove(taskId)
     }
 
+    var familyHasUnreviewedVisits: Bool {
+        taskHistory.contains { task in
+            taskRatings[task.id] == nil && !skippedReviews.contains(task.id)
+        }
+    }
+
     // Course progress: courseId → set of completed moduleIds
     var completedModules: [UUID: Set<UUID>] = [:]
 
@@ -250,6 +256,11 @@ final class AppState {
             activeTaskForElderly = task
         }
         MockPushService().send(notification: .taskCompleted)
+        // Simulate: after 24h without elderly review, remind family
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) { [weak self] in
+            guard let self, self.taskRatings[task.id] == nil else { return }
+            MockPushService().send(notification: .familyReviewReminder(elderlyName: self.elderlyUser.firstName))
+        }
     }
 
     func elderlySubmitsReview(stars: Int, body: String) {

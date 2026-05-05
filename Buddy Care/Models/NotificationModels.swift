@@ -12,6 +12,7 @@ enum BuddieNotification {
     case payoutSent(amountEuros: Double)
     case courseExamAvailable(level: Int)
     case certificateExpiringSoon(level: Int)
+    case familyReviewReminder(elderlyName: String)
 
     var title: String {
         switch self {
@@ -37,6 +38,8 @@ enum BuddieNotification {
             return "Niveau \(level) examen is klaar voor u."
         case .certificateExpiringSoon(let level):
             return "Uw Level \(level) certificaat verloopt over \(Config.certificateExpiryWarningDays) dagen."
+        case .familyReviewReminder(let name):
+            return "\(name) heeft haar bezoek nog niet beoordeeld — wil jij even een beoordeling achterlaten?"
         }
     }
 
@@ -53,6 +56,7 @@ enum BuddieNotification {
         case .payoutSent: return "eurosign.circle.fill"
         case .courseExamAvailable: return "graduationcap.fill"
         case .certificateExpiringSoon: return "clock.badge.exclamationmark"
+        case .familyReviewReminder: return "star.bubble.fill"
         }
     }
 }
