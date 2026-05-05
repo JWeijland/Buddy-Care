@@ -43,6 +43,30 @@ final class AppState {
     // Buddy availability
     var isAvailableNow: Bool = true
 
+    // Diploma
+    var diplomaStatus: DiplomaStatus = .none
+
+    var effectiveBuddyLevel: ServiceLevel {
+        guard case .verified = diplomaStatus else { return buddyUser.level }
+        let kort = CourseContent.course_basisWelkom_kort
+        let done = completedModules[kort.id] ?? []
+        return done.count >= kort.modules.count ? .three : .zero
+    }
+
+    var shortCourseComplete: Bool {
+        let kort = CourseContent.course_basisWelkom_kort
+        let done = completedModules[kort.id] ?? []
+        return done.count >= kort.modules.count
+    }
+
+    func submitDiploma(type: String) {
+        diplomaStatus = .pending(type: type)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+            self?.diplomaStatus = .verified(type: type)
+            self?.showToast(text: "Diploma geverifieerd! Voltooi de verkorte Basis Buddy cursus.", icon: "checkmark.shield.fill")
+        }
+    }
+
     // Check-in state
     private var selfieCapturedAt: Date? = nil
     var hasSelfieToday: Bool {
@@ -288,6 +312,19 @@ final class AppState {
             if self?.toastMessage?.text == text {
                 self?.toastMessage = nil
             }
+        }
+    }
+}
+
+enum DiplomaStatus: Equatable {
+    case none
+    case pending(type: String)
+    case verified(type: String)
+
+    var diplomaType: String? {
+        switch self {
+        case .pending(let t), .verified(let t): return t
+        case .none: return nil
         }
     }
 }

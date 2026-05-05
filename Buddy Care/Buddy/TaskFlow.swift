@@ -9,7 +9,7 @@ struct TaskDetailSheet: View {
     let onAccept: () -> Void
 
     private var canAccept: Bool {
-        appState.buddyUser.level.rawValue >= task.requiredLevel.rawValue
+        appState.effectiveBuddyLevel.rawValue >= task.requiredLevel.rawValue
     }
 
     var body: some View {

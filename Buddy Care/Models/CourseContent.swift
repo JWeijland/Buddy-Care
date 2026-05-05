@@ -86,6 +86,50 @@ Bijzonderheden — zoals een val, ongewone verwardheid, of zorgen van de oudere 
         ]
     )
 
+    // MARK: - Niveau 0: Basis Buddy — Verkorte versie voor gediplomeerden
+
+    static let course_basisWelkom_kort: Course = Course(
+        id: UUID(), level: .zero,
+        title: "Basis Buddy — Verkorte versie",
+        durationMinutes: 18,
+        progressPercent: 0,
+        unlocked: true,
+        summary: "Speciaal voor zorggediplomeerden: alleen de Buddy Care-specifieke normen, gedragscode en app-gebruik. Communicatie en zorgvaardigheden worden als bekend verondersteld.",
+        modules: [
+            video("Welkom bij Buddy Care", symbol: "heart.text.square.fill", duration: 8, """
+In deze verkorte introductie maak je kennis met de missie en spelregels van Buddy Care. Omdat jij al een erkend zorgdiploma hebt, slaan we de basis zorgvaardigheden over. We focussen op wat Buddy Care specifiek van je vraagt: hoe werkt de app, wat zijn onze gedragsnormen, en hoe ga je om met het bezoekprotocol.
+
+Belangrijk: ook met een diploma blijf jij als buddy verantwoordelijk voor het naleven van de Buddy Care-gedragscode. Jouw ervaring is een groot voordeel — maar de normen van ons platform gelden voor iedereen gelijk.
+"""),
+            reading("Buddy Care Gedragscode", symbol: "checkmark.shield.fill", duration: 5, [
+                section("Wat verwacht Buddy Care van jou", symbol: "person.badge.shield.checkmark.fill", """
+Als gecertificeerde buddy handel je altijd binnen jouw bevoegdheid én bekwaamheid. Een diploma geeft bevoegdheid — jij bepaalt zelf of je ook bekwaam bent voor een specifieke situatie bij een specifieke cliënt. Twijfel je? Doe het niet en overleg.
+
+Wees altijd op tijd, geef minimaal 2 uur van tevoren af als je onverhoopt niet kunt, en schrijf altijd een objectieve overdrachtsnotitie na elk bezoek.
+"""),
+                section("Check-in en verificatie", symbol: "qrcode.viewfinder", """
+Bij elk bezoek check je in via de app: QR-code op de telefoon van de oudere scannen, GPS-verificatie en (eenmalig per dag) een selfie. Dit is niet optioneel — ook niet voor gediplomeerden. Het check-in systeem beschermt zowel jou als de cliënt en is de officiële tijdregistratie voor je vergoeding.
+"""),
+                section("Privacy en beroepsgeheim", symbol: "lock.shield.fill", """
+Alles wat je ziet, hoort of leest tijdens een bezoek valt onder je beroepsgeheim. Deel nooit informatie over een cliënt via persoonlijke kanalen — ook niet met vrienden of familie, ook niet 'anoniem'. Gebruik uitsluitend de Buddy Care app voor overdracht en communicatie.
+
+Schending van het beroepsgeheim kan leiden tot directe uitsluiting van het platform en aangifte bij de bevoegde instanties.
+""")
+            ]),
+            quiz("Eindtoets — Buddy Care Gedragscode", symbol: "checkmark.seal.fill", [
+                q("Je hebt een MBO Helpende diploma. Een oudere vraagt je om een injectie toe te dienen. Wat doe je?",
+                  ["Je doet het, want je hebt een diploma", "Je weigert: medicatie toedienen via injectie vereist Niveau 4 (BIG)", "Je vraagt de familie of het mag", "Je belt de huisarts voor toestemming"], correct: 1,
+                  "Injecties zijn voorbehouden handelingen waarvoor een BIG-registratie vereist is. Ook met een Helpende diploma — Niveau 3 — mag je dit niet uitvoeren. Buddy Care werkt met strikte niveaubevoegdheden."),
+                q("Je bent 10 minuten te laat voor een bezoek. Wat doe je?",
+                  ["Niets, het is maar 10 minuten", "Je belt of appt de oudere voor aanvang", "Je belt af via de app en meldt je vertraging", "Je gaat gewoon en meldt het na afloop"], correct: 2,
+                  "Ouderen rekenen op jou. Meld je vertraging altijd via de app — zo kan de familie ook meekijken en weet de oudere dat je eraan komt."),
+                q("Na een bezoek schrijf je een notitie. Welke formulering is correct?",
+                  ["'Mevrouw was lastig vandaag'", "'Mevrouw leek verdrietig en noemde haar zus twee keer'", "'Alles goed gegaan, geen bijzonderheden'", "'Mevrouw heeft dementie dus dat was te verwachten'"], correct: 1,
+                  "Een overdrachtsnotitie is objectief en feitelijk. Oordelen als 'lastig' of 'te verwachten' zijn niet professioneel en kunnen schadelijk zijn voor de continuïteit van zorg.")
+            ])
+        ]
+    )
+
     // MARK: - Niveau 0: Communicatie & Empathie
 
     static let course_communicatie: Course = Course(
