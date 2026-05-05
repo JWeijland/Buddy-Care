@@ -981,20 +981,36 @@ struct BuddyOnboardingFlow: View {
     // MARK: - Bottom bar
 
     private var bottomBar: some View {
-        HStack(spacing: BCSpacing.sm) {
-            if step > 0 {
-                BCSecondaryButton(title: "Terug", icon: "chevron.left") {
-                    step -= 1
+        VStack(spacing: BCSpacing.xs) {
+            if step == 5 {
+                Button {
+                    isZzper = true
+                    kvkNumber = "12345678"
+                    btwNumber = "NL000000000B01"
+                    step += 1
+                } label: {
+                    Label("Demo: sla ZZP-stap over", systemImage: "play.fill")
+                        .font(BCTypography.caption)
+                        .foregroundStyle(BCColors.textTertiary)
                 }
+                .buttonStyle(.plain)
             }
-            BCPrimaryButton(
-                title: step == 12 ? "Aanvraag indienen" : "Volgende",
-                icon: step == 12 ? "checkmark" : "chevron.right"
-            ) {
-                step += 1
+
+            HStack(spacing: BCSpacing.sm) {
+                if step > 0 {
+                    BCSecondaryButton(title: "Terug", icon: "chevron.left") {
+                        step -= 1
+                    }
+                }
+                BCPrimaryButton(
+                    title: step == 12 ? "Aanvraag indienen" : "Volgende",
+                    icon: step == 12 ? "checkmark" : "chevron.right"
+                ) {
+                    step += 1
+                }
+                .opacity(canContinue ? 1.0 : 0.4)
+                .disabled(!canContinue)
             }
-            .opacity(canContinue ? 1.0 : 0.4)
-            .disabled(!canContinue)
         }
         .padding(.horizontal, BCSpacing.lg)
         .padding(.vertical, BCSpacing.md)
