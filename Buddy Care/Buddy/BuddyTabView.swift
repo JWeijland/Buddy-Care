@@ -9,9 +9,9 @@ struct BuddyTabView: View {
             BuddyMapView()
                 .tag(0)
                 .tabItem { Label("Kaart", systemImage: "map.fill") }
-            EarningsView()
+            WalletView()
                 .tag(1)
-                .tabItem { Label("Verdiensten", systemImage: "eurosign.circle.fill") }
+                .tabItem { Label("Wallet", systemImage: "wallet.pass.fill") }
             CoursesView()
                 .tag(2)
                 .tabItem { Label("Cursussen", systemImage: "graduationcap.fill") }
