@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreImage
 
 struct ElderlyHomeView: View {
     @Environment(AppState.self) private var appState
@@ -7,6 +8,7 @@ struct ElderlyHomeView: View {
     @State private var showReview = false
     @State private var selectedHistoryTask: ServiceTask? = nil
     @State private var showWMOGuide = false
+    @State private var showQRCode = false
 
     private var et: BCElderlyType { BCElderlyType(large: largeText) }
 
@@ -51,10 +53,12 @@ struct ElderlyHomeView: View {
                                 if !largeText {
                                     BCBigTile(
                                         title: "Bezoek aan de deur",
-                                        subtitle: "Bekijk wie er staat (camera)",
-                                        icon: "video.fill",
+                                        subtitle: "Toon QR-code voor de buddy",
+                                        icon: "qrcode",
                                         color: BCColors.level1
-                                    ) { }
+                                    ) {
+                                        showQRCode = true
+                                    }
                                 }
                             }
                             .padding(.horizontal, BCSpacing.lg)
@@ -80,6 +84,9 @@ struct ElderlyHomeView: View {
         }
         .sheet(isPresented: $showWMOGuide) {
             WMOGuideView()
+        }
+        .sheet(isPresented: $showQRCode) {
+            ElderlyQRCodeSheet()
         }
         .sheet(item: $selectedHistoryTask) { task in
             PastVisitSheet(task: task)
@@ -442,6 +449,82 @@ private struct PastVisitSheet: View {
         .onAppear {
             selectedStars = appState.taskRatings[task.id] ?? 0
         }
+    }
+}
+
+// MARK: - QR code sheet (for buddy to scan at door)
+
+private struct ElderlyQRCodeSheet: View {
+    @Environment(AppState.self) private var appState
+    @Environment(\.dismiss) private var dismiss
+
+    private var qrPayload: String {
+        if let task = appState.activeTaskForElderly {
+            return "buddycare://task/\(task.id.uuidString)"
+        }
+        return "buddycare://checkin/\(UUID().uuidString)"
+    }
+
+    private var buddyName: String? {
+        appState.activeTaskForElderly?.assignedBuddyName
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: BCSpacing.xl) {
+                Spacer()
+
+                VStack(spacing: BCSpacing.sm) {
+                    Text("Laat de buddy dit scannen")
+                        .font(BCTypography.title3)
+                        .foregroundStyle(BCColors.textPrimary)
+                    if let name = buddyName {
+                        Text("Houd uw telefoon voor \(name) zodat hij/zij de QR-code kan inscannen.")
+                            .font(BCTypography.body)
+                            .foregroundStyle(BCColors.textSecondary)
+                            .multilineTextAlignment(.center)
+                    } else {
+                        Text("Houd uw telefoon voor de buddy zodat hij/zij de QR-code kan inscannen.")
+                            .font(BCTypography.body)
+                            .foregroundStyle(BCColors.textSecondary)
+                            .multilineTextAlignment(.center)
+                    }
+                }
+                .padding(.horizontal, BCSpacing.lg)
+
+                if let qrImage = makeQRImage(payload: qrPayload) {
+                    Image(uiImage: qrImage)
+                        .interpolation(.none)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 240, height: 240)
+                        .padding(BCSpacing.lg)
+                        .background(RoundedRectangle(cornerRadius: BCRadius.lg, style: .continuous).fill(.white))
+                        .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 4)
+                }
+
+                Spacer()
+            }
+            .background(BCColors.background.ignoresSafeArea())
+            .navigationTitle("QR-code voor buddy")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Sluiten") { dismiss() }.tint(BCColors.primary)
+                }
+            }
+        }
+    }
+
+    private func makeQRImage(payload: String) -> UIImage? {
+        guard let filter = CIFilter(name: "CIQRCodeGenerator") else { return nil }
+        filter.setValue(Data(payload.utf8), forKey: "inputMessage")
+        filter.setValue("M", forKey: "inputCorrectionLevel")
+        guard let ciImage = filter.outputImage else { return nil }
+        let scaled = ciImage.transformed(by: CGAffineTransform(scaleX: 12, y: 12))
+        let context = CIContext()
+        guard let cgImage = context.createCGImage(scaled, from: scaled.extent) else { return nil }
+        return UIImage(cgImage: cgImage)
     }
 }
 

@@ -174,7 +174,7 @@ struct TaskInProgressView: View {
                     Text("Klaar om in te checken?")
                         .font(BCTypography.title3)
                         .foregroundStyle(BCColors.textPrimary)
-                    Text("Maak een selfie, scan de QR-code bij de deur en bevestig je locatie.")
+                    Text("Maak een selfie, scan de QR-code op de telefoon van \(task.elderlyName) en bevestig je locatie.")
                         .font(BCTypography.body)
                         .foregroundStyle(BCColors.textSecondary)
                         .multilineTextAlignment(.center)

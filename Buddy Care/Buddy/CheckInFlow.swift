@@ -35,7 +35,7 @@ struct CheckInFlowView: View {
                         case .selfie:
                             SelfieStepView(onConfirmed: handleSelfieConfirmed)
                         case .qr:
-                            QRScanStepView(onScanned: handleQRScanned)
+                            QRScanStepView(elderlyName: task.elderlyName, onScanned: handleQRScanned)
                         case .gps:
                             GPSVerifyView(
                                 task: task,
@@ -278,6 +278,7 @@ private struct FrontCameraView: UIViewControllerRepresentable {
 // MARK: - Step 2: QR Scanner
 
 private struct QRScanStepView: View {
+    let elderlyName: String
     let onScanned: (String) -> Void
 
     @State private var showManualInput = false
@@ -310,7 +311,7 @@ private struct QRScanStepView: View {
     private var scannerOverlay: some View {
         VStack {
             HStack {
-                Label("Richt op de QR-code bij de voordeur", systemImage: "qrcode.viewfinder")
+                Label("Scan de QR-code op de telefoon van \(elderlyName)", systemImage: "qrcode.viewfinder")
                     .font(BCTypography.captionEmphasized)
                     .foregroundStyle(.white)
                     .padding(.horizontal, BCSpacing.md)
@@ -379,7 +380,7 @@ private struct QRScanStepView: View {
     private var manualInputSheet: some View {
         NavigationStack {
             VStack(spacing: BCSpacing.lg) {
-                Text("Voer de 6-cijferige code in die staat naast de QR-code bij de voordeur.")
+                Text("Vraag \(elderlyName) om de code naast de QR-code op te lezen en voer hem hier in.")
                     .font(BCTypography.body)
                     .foregroundStyle(BCColors.textSecondary)
                     .multilineTextAlignment(.center)
