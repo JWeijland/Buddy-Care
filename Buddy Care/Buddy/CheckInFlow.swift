@@ -324,15 +324,27 @@ private struct QRScanStepView: View {
             finderFrame
             Spacer()
 
-            Button {
-                showManualInput = true
-            } label: {
-                Text("Code niet scanbaar?")
-                    .font(BCTypography.captionEmphasized)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, BCSpacing.md)
-                    .padding(.vertical, BCSpacing.sm)
-                    .background(Capsule().fill(.black.opacity(0.5)))
+            HStack(spacing: BCSpacing.sm) {
+                Button {
+                    showManualInput = true
+                } label: {
+                    Text("Code niet scanbaar?")
+                        .font(BCTypography.captionEmphasized)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, BCSpacing.md)
+                        .padding(.vertical, BCSpacing.sm)
+                        .background(Capsule().fill(.black.opacity(0.5)))
+                }
+                Button {
+                    handleScanned("buddycare://demo/\(UUID().uuidString)")
+                } label: {
+                    Label("Demo", systemImage: "play.fill")
+                        .font(BCTypography.captionEmphasized)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, BCSpacing.md)
+                        .padding(.vertical, BCSpacing.sm)
+                        .background(Capsule().fill(BCColors.primary.opacity(0.8)))
+                }
             }
             .padding(.bottom, BCSpacing.xl)
         }
