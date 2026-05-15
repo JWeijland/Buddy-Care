@@ -674,7 +674,6 @@ struct BuddyOnboardingFlow: View {
         let icon: String
         let name: String
         let subtitle: String
-        let level: Int
     }
 
     private struct ServiceGroup {
