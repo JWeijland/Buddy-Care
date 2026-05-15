@@ -8,19 +8,114 @@
 
 /* Begin PBXBuildFile section */
 		D30284292FA7CAB9008387AB /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = D30283D12FA7C932008387AB /* Supabase */; };
+		D37409CF2FB229AB003448A5 /* RoleSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D374099C2FB229AB003448A5 /* RoleSelectionView.swift */; };
+		D37409D02FB229AB003448A5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D374099A2FB229AB003448A5 /* LoginView.swift */; };
+		D37409D12FB229AB003448A5 /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409C92FB229AB003448A5 /* SupabaseManager.swift */; };
+		D37409D22FB229AB003448A5 /* NotificationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409C42FB229AB003448A5 /* NotificationModels.swift */; };
+		D37409D32FB229AB003448A5 /* BuddyOnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409A22FB229AB003448A5 /* BuddyOnboardingFlow.swift */; };
+		D37409D42FB229AB003448A5 /* RequestHelpFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409B72FB229AB003448A5 /* RequestHelpFlow.swift */; };
+		D37409D52FB229AB003448A5 /* CordaanBuddyOnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409A72FB229AB003448A5 /* CordaanBuddyOnboardingFlow.swift */; };
+		D3740A032FB23079003448A5 /* AdminPhoneRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3740A022FB23079003448A5 /* AdminPhoneRequestView.swift */; };
+		D37409D62FB229AB003448A5 /* AdminMembershipsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409952FB229AB003448A5 /* AdminMembershipsView.swift */; };
+		D37409D72FB229AB003448A5 /* BCTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409B02FB229AB003448A5 /* BCTypography.swift */; };
+		D37409D82FB229AB003448A5 /* SOSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409B92FB229AB003448A5 /* SOSView.swift */; };
+		D37409D92FB229AB003448A5 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409C22FB229AB003448A5 /* MockData.swift */; };
+		D37409DA2FB229AB003448A5 /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409CA2FB229AB003448A5 /* TaskService.swift */; };
+		D37409DB2FB229AB003448A5 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D374099D2FB229AB003448A5 /* RootView.swift */; };
+		D37409DC2FB229AB003448A5 /* BCComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409AF2FB229AB003448A5 /* BCComponents.swift */; };
+		D37409DD2FB229AB003448A5 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409C32FB229AB003448A5 /* Models.swift */; };
+		D37409DE2FB229AB003448A5 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409992FB229AB003448A5 /* Config.swift */; };
+		D37409DF2FB229AB003448A5 /* BuddyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409A32FB229AB003448A5 /* BuddyProfileView.swift */; };
+		D37409E02FB229AB003448A5 /* ReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409B82FB229AB003448A5 /* ReviewView.swift */; };
+		D37409E12FB229AB003448A5 /* EarningsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409AA2FB229AB003448A5 /* EarningsView.swift */; };
+		D37409E22FB229AB003448A5 /* CheckInFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409A62FB229AB003448A5 /* CheckInFlow.swift */; };
+		D37409E32FB229AB003448A5 /* ElderlyTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409B42FB229AB003448A5 /* ElderlyTabView.swift */; };
+		D37409E42FB229AB003448A5 /* CoursesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409A92FB229AB003448A5 /* CoursesView.swift */; };
+		D37409E52FB229AB003448A5 /* AdminBillingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409942FB229AB003448A5 /* AdminBillingView.swift */; };
+		D37409E62FB229AB003448A5 /* FamilyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409BC2FB229AB003448A5 /* FamilyDashboardView.swift */; };
+		D37409E72FB229AB003448A5 /* ElderlyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409B32FB229AB003448A5 /* ElderlyProfileView.swift */; };
+		D37409E82FB229AB003448A5 /* CertificateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409A52FB229AB003448A5 /* CertificateView.swift */; };
+		D37409E92FB229AB003448A5 /* AdminTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409962FB229AB003448A5 /* AdminTabView.swift */; };
+		D37409EA2FB229AB003448A5 /* BuddyMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409A12FB229AB003448A5 /* BuddyMapView.swift */; };
+		D37409EB2FB229AB003448A5 /* PaymentOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409B62FB229AB003448A5 /* PaymentOverviewView.swift */; };
+		D37409EC2FB229AB003448A5 /* BuddyTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409A42FB229AB003448A5 /* BuddyTabView.swift */; };
+		D37409ED2FB229AB003448A5 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409C82FB229AB003448A5 /* ProfileService.swift */; };
+		D37409EE2FB229AB003448A5 /* BCColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409AE2FB229AB003448A5 /* BCColors.swift */; };
+		D37409EF2FB229AB003448A5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409AD2FB229AB003448A5 /* ContentView.swift */; };
+		D37409F02FB229AB003448A5 /* TaskFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409AB2FB229AB003448A5 /* TaskFlow.swift */; };
+		D37409F12FB229AB003448A5 /* CourseModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409A82FB229AB003448A5 /* CourseModuleView.swift */; };
+		D37409F22FB229AB003448A5 /* WMOGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409CD2FB229AB003448A5 /* WMOGuideView.swift */; };
+		D37409F32FB229AB003448A5 /* OrganizationOnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D374099B2FB229AB003448A5 /* OrganizationOnboardingFlow.swift */; };
+		D37409F42FB229AB003448A5 /* Buddie_CareApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409A02FB229AB003448A5 /* Buddie_CareApp.swift */; };
+		D37409F52FB229AB003448A5 /* ActivityTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409BB2FB229AB003448A5 /* ActivityTimelineView.swift */; };
+		D37409F62FB229AB003448A5 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409C62FB229AB003448A5 /* AuthService.swift */; };
+		D37409F72FB229AB003448A5 /* FamilyTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409BF2FB229AB003448A5 /* FamilyTabView.swift */; };
+		D37409F82FB229AB003448A5 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409982FB229AB003448A5 /* AppState.swift */; };
+		D37409F92FB229AB003448A5 /* FamilyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409BE2FB229AB003448A5 /* FamilyProfileView.swift */; };
+		D37409FA2FB229AB003448A5 /* MockServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409C72FB229AB003448A5 /* MockServices.swift */; };
+		D37409FB2FB229AB003448A5 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409CC2FB229AB003448A5 /* SplashView.swift */; };
+		D37409FC2FB229AB003448A5 /* FamilyLinkingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409BD2FB229AB003448A5 /* FamilyLinkingView.swift */; };
+		D37409FD2FB229AB003448A5 /* ElderlyHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409B22FB229AB003448A5 /* ElderlyHomeView.swift */; };
+		D37409FE2FB229AB003448A5 /* CourseContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409C12FB229AB003448A5 /* CourseContent.swift */; };
+		D37409FF2FB229AB003448A5 /* MyBuddiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37409B52FB229AB003448A5 /* MyBuddiesView.swift */; };
+		D3740A002FB229AB003448A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D374099F2FB229AB003448A5 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D30283182FA68640008387AB /* Buddy Care.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Buddy Care.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D37409942FB229AB003448A5 /* AdminBillingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminBillingView.swift; sourceTree = "<group>"; };
+		D37409952FB229AB003448A5 /* AdminMembershipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminMembershipsView.swift; sourceTree = "<group>"; };
+		D37409962FB229AB003448A5 /* AdminTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminTabView.swift; sourceTree = "<group>"; };
+		D3740A022FB23079003448A5 /* AdminPhoneRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminPhoneRequestView.swift; sourceTree = "<group>"; };
+		D37409982FB229AB003448A5 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		D37409992FB229AB003448A5 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		D374099A2FB229AB003448A5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		D374099B2FB229AB003448A5 /* OrganizationOnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationOnboardingFlow.swift; sourceTree = "<group>"; };
+		D374099C2FB229AB003448A5 /* RoleSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleSelectionView.swift; sourceTree = "<group>"; };
+		D374099D2FB229AB003448A5 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		D374099F2FB229AB003448A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D37409A02FB229AB003448A5 /* Buddie_CareApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buddie_CareApp.swift; sourceTree = "<group>"; };
+		D37409A12FB229AB003448A5 /* BuddyMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuddyMapView.swift; sourceTree = "<group>"; };
+		D37409A22FB229AB003448A5 /* BuddyOnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuddyOnboardingFlow.swift; sourceTree = "<group>"; };
+		D37409A32FB229AB003448A5 /* BuddyProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuddyProfileView.swift; sourceTree = "<group>"; };
+		D37409A42FB229AB003448A5 /* BuddyTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuddyTabView.swift; sourceTree = "<group>"; };
+		D37409A52FB229AB003448A5 /* CertificateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificateView.swift; sourceTree = "<group>"; };
+		D37409A62FB229AB003448A5 /* CheckInFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInFlow.swift; sourceTree = "<group>"; };
+		D37409A72FB229AB003448A5 /* CordaanBuddyOnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CordaanBuddyOnboardingFlow.swift; sourceTree = "<group>"; };
+		D37409A82FB229AB003448A5 /* CourseModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseModuleView.swift; sourceTree = "<group>"; };
+		D37409A92FB229AB003448A5 /* CoursesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursesView.swift; sourceTree = "<group>"; };
+		D37409AA2FB229AB003448A5 /* EarningsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarningsView.swift; sourceTree = "<group>"; };
+		D37409AB2FB229AB003448A5 /* TaskFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskFlow.swift; sourceTree = "<group>"; };
+		D37409AD2FB229AB003448A5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		D37409AE2FB229AB003448A5 /* BCColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCColors.swift; sourceTree = "<group>"; };
+		D37409AF2FB229AB003448A5 /* BCComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCComponents.swift; sourceTree = "<group>"; };
+		D37409B02FB229AB003448A5 /* BCTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCTypography.swift; sourceTree = "<group>"; };
+		D37409B22FB229AB003448A5 /* ElderlyHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElderlyHomeView.swift; sourceTree = "<group>"; };
+		D37409B32FB229AB003448A5 /* ElderlyProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElderlyProfileView.swift; sourceTree = "<group>"; };
+		D37409B42FB229AB003448A5 /* ElderlyTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElderlyTabView.swift; sourceTree = "<group>"; };
+		D37409B52FB229AB003448A5 /* MyBuddiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyBuddiesView.swift; sourceTree = "<group>"; };
+		D37409B62FB229AB003448A5 /* PaymentOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentOverviewView.swift; sourceTree = "<group>"; };
+		D37409B72FB229AB003448A5 /* RequestHelpFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHelpFlow.swift; sourceTree = "<group>"; };
+		D37409B82FB229AB003448A5 /* ReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewView.swift; sourceTree = "<group>"; };
+		D37409B92FB229AB003448A5 /* SOSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SOSView.swift; sourceTree = "<group>"; };
+		D37409BB2FB229AB003448A5 /* ActivityTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTimelineView.swift; sourceTree = "<group>"; };
+		D37409BC2FB229AB003448A5 /* FamilyDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyDashboardView.swift; sourceTree = "<group>"; };
+		D37409BD2FB229AB003448A5 /* FamilyLinkingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyLinkingView.swift; sourceTree = "<group>"; };
+		D37409BE2FB229AB003448A5 /* FamilyProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyProfileView.swift; sourceTree = "<group>"; };
+		D37409BF2FB229AB003448A5 /* FamilyTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyTabView.swift; sourceTree = "<group>"; };
+		D37409C12FB229AB003448A5 /* CourseContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseContent.swift; sourceTree = "<group>"; };
+		D37409C22FB229AB003448A5 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
+		D37409C32FB229AB003448A5 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		D37409C42FB229AB003448A5 /* NotificationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationModels.swift; sourceTree = "<group>"; };
+		D37409C62FB229AB003448A5 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		D37409C72FB229AB003448A5 /* MockServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockServices.swift; sourceTree = "<group>"; };
+		D37409C82FB229AB003448A5 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		D37409C92FB229AB003448A5 /* SupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseManager.swift; sourceTree = "<group>"; };
+		D37409CA2FB229AB003448A5 /* TaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskService.swift; sourceTree = "<group>"; };
+		D37409CC2FB229AB003448A5 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		D37409CD2FB229AB003448A5 /* WMOGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WMOGuideView.swift; sourceTree = "<group>"; };
+		D3740A012FB23079003448A5 /* Buddy Care.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Buddy Care.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		D302831A2FA68640008387AB /* Buddy Care */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Buddy Care";
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		D30283152FA68640008387AB /* Frameworks */ = {
@@ -37,7 +132,19 @@
 		D302830F2FA68640008387AB = {
 			isa = PBXGroup;
 			children = (
-				D302831A2FA68640008387AB /* Buddy Care */,
+				D3740A012FB23079003448A5 /* Buddy Care.entitlements */,
+				D37409972FB229AB003448A5 /* Admin */,
+				D374099E2FB229AB003448A5 /* App */,
+				D374099F2FB229AB003448A5 /* Assets.xcassets */,
+				D37409A02FB229AB003448A5 /* Buddie_CareApp.swift */,
+				D37409AC2FB229AB003448A5 /* Buddy */,
+				D37409AD2FB229AB003448A5 /* ContentView.swift */,
+				D37409B12FB229AB003448A5 /* DesignSystem */,
+				D37409BA2FB229AB003448A5 /* Elderly */,
+				D37409C02FB229AB003448A5 /* Family */,
+				D37409C52FB229AB003448A5 /* Models */,
+				D37409CB2FB229AB003448A5 /* Services */,
+				D37409CE2FB229AB003448A5 /* Shared */,
 				D30283192FA68640008387AB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -48,6 +155,117 @@
 				D30283182FA68640008387AB /* Buddy Care.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D37409972FB229AB003448A5 /* Admin */ = {
+			isa = PBXGroup;
+			children = (
+				D37409942FB229AB003448A5 /* AdminBillingView.swift */,
+				D37409952FB229AB003448A5 /* AdminMembershipsView.swift */,
+				D37409962FB229AB003448A5 /* AdminTabView.swift */,
+				D3740A022FB23079003448A5 /* AdminPhoneRequestView.swift */,
+			);
+			path = Admin;
+			sourceTree = "<group>";
+		};
+		D374099E2FB229AB003448A5 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				D37409982FB229AB003448A5 /* AppState.swift */,
+				D37409992FB229AB003448A5 /* Config.swift */,
+				D374099A2FB229AB003448A5 /* LoginView.swift */,
+				D374099B2FB229AB003448A5 /* OrganizationOnboardingFlow.swift */,
+				D374099C2FB229AB003448A5 /* RoleSelectionView.swift */,
+				D374099D2FB229AB003448A5 /* RootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		D37409AC2FB229AB003448A5 /* Buddy */ = {
+			isa = PBXGroup;
+			children = (
+				D37409A12FB229AB003448A5 /* BuddyMapView.swift */,
+				D37409A22FB229AB003448A5 /* BuddyOnboardingFlow.swift */,
+				D37409A32FB229AB003448A5 /* BuddyProfileView.swift */,
+				D37409A42FB229AB003448A5 /* BuddyTabView.swift */,
+				D37409A52FB229AB003448A5 /* CertificateView.swift */,
+				D37409A62FB229AB003448A5 /* CheckInFlow.swift */,
+				D37409A72FB229AB003448A5 /* CordaanBuddyOnboardingFlow.swift */,
+				D37409A82FB229AB003448A5 /* CourseModuleView.swift */,
+				D37409A92FB229AB003448A5 /* CoursesView.swift */,
+				D37409AA2FB229AB003448A5 /* EarningsView.swift */,
+				D37409AB2FB229AB003448A5 /* TaskFlow.swift */,
+			);
+			path = Buddy;
+			sourceTree = "<group>";
+		};
+		D37409B12FB229AB003448A5 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				D37409AE2FB229AB003448A5 /* BCColors.swift */,
+				D37409AF2FB229AB003448A5 /* BCComponents.swift */,
+				D37409B02FB229AB003448A5 /* BCTypography.swift */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		D37409BA2FB229AB003448A5 /* Elderly */ = {
+			isa = PBXGroup;
+			children = (
+				D37409B22FB229AB003448A5 /* ElderlyHomeView.swift */,
+				D37409B32FB229AB003448A5 /* ElderlyProfileView.swift */,
+				D37409B42FB229AB003448A5 /* ElderlyTabView.swift */,
+				D37409B52FB229AB003448A5 /* MyBuddiesView.swift */,
+				D37409B62FB229AB003448A5 /* PaymentOverviewView.swift */,
+				D37409B72FB229AB003448A5 /* RequestHelpFlow.swift */,
+				D37409B82FB229AB003448A5 /* ReviewView.swift */,
+				D37409B92FB229AB003448A5 /* SOSView.swift */,
+			);
+			path = Elderly;
+			sourceTree = "<group>";
+		};
+		D37409C02FB229AB003448A5 /* Family */ = {
+			isa = PBXGroup;
+			children = (
+				D37409BB2FB229AB003448A5 /* ActivityTimelineView.swift */,
+				D37409BC2FB229AB003448A5 /* FamilyDashboardView.swift */,
+				D37409BD2FB229AB003448A5 /* FamilyLinkingView.swift */,
+				D37409BE2FB229AB003448A5 /* FamilyProfileView.swift */,
+				D37409BF2FB229AB003448A5 /* FamilyTabView.swift */,
+			);
+			path = Family;
+			sourceTree = "<group>";
+		};
+		D37409C52FB229AB003448A5 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D37409C12FB229AB003448A5 /* CourseContent.swift */,
+				D37409C22FB229AB003448A5 /* MockData.swift */,
+				D37409C32FB229AB003448A5 /* Models.swift */,
+				D37409C42FB229AB003448A5 /* NotificationModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D37409CB2FB229AB003448A5 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				D37409C62FB229AB003448A5 /* AuthService.swift */,
+				D37409C72FB229AB003448A5 /* MockServices.swift */,
+				D37409C82FB229AB003448A5 /* ProfileService.swift */,
+				D37409C92FB229AB003448A5 /* SupabaseManager.swift */,
+				D37409CA2FB229AB003448A5 /* TaskService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		D37409CE2FB229AB003448A5 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				D37409CC2FB229AB003448A5 /* SplashView.swift */,
+				D37409CD2FB229AB003448A5 /* WMOGuideView.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -64,9 +282,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				D302831A2FA68640008387AB /* Buddy Care */,
 			);
 			name = "Buddy Care";
 			packageProductDependencies = (
@@ -118,6 +333,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D3740A002FB229AB003448A5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,6 +344,56 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D37409CF2FB229AB003448A5 /* RoleSelectionView.swift in Sources */,
+				D37409D02FB229AB003448A5 /* LoginView.swift in Sources */,
+				D37409D12FB229AB003448A5 /* SupabaseManager.swift in Sources */,
+				D37409D22FB229AB003448A5 /* NotificationModels.swift in Sources */,
+				D37409D32FB229AB003448A5 /* BuddyOnboardingFlow.swift in Sources */,
+				D37409D42FB229AB003448A5 /* RequestHelpFlow.swift in Sources */,
+				D37409D52FB229AB003448A5 /* CordaanBuddyOnboardingFlow.swift in Sources */,
+				D37409D62FB229AB003448A5 /* AdminMembershipsView.swift in Sources */,
+				D37409D72FB229AB003448A5 /* BCTypography.swift in Sources */,
+				D37409D82FB229AB003448A5 /* SOSView.swift in Sources */,
+				D37409D92FB229AB003448A5 /* MockData.swift in Sources */,
+				D37409DA2FB229AB003448A5 /* TaskService.swift in Sources */,
+				D37409DB2FB229AB003448A5 /* RootView.swift in Sources */,
+				D37409DC2FB229AB003448A5 /* BCComponents.swift in Sources */,
+				D37409DD2FB229AB003448A5 /* Models.swift in Sources */,
+				D37409DE2FB229AB003448A5 /* Config.swift in Sources */,
+				D37409DF2FB229AB003448A5 /* BuddyProfileView.swift in Sources */,
+				D37409E02FB229AB003448A5 /* ReviewView.swift in Sources */,
+				D37409E12FB229AB003448A5 /* EarningsView.swift in Sources */,
+				D37409E22FB229AB003448A5 /* CheckInFlow.swift in Sources */,
+				D37409E32FB229AB003448A5 /* ElderlyTabView.swift in Sources */,
+				D37409E42FB229AB003448A5 /* CoursesView.swift in Sources */,
+				D37409E52FB229AB003448A5 /* AdminBillingView.swift in Sources */,
+				D37409E62FB229AB003448A5 /* FamilyDashboardView.swift in Sources */,
+				D37409E72FB229AB003448A5 /* ElderlyProfileView.swift in Sources */,
+				D37409E82FB229AB003448A5 /* CertificateView.swift in Sources */,
+				D37409E92FB229AB003448A5 /* AdminTabView.swift in Sources */,
+				D3740A032FB23079003448A5 /* AdminPhoneRequestView.swift in Sources */,
+				D37409EA2FB229AB003448A5 /* BuddyMapView.swift in Sources */,
+				D37409EB2FB229AB003448A5 /* PaymentOverviewView.swift in Sources */,
+				D37409EC2FB229AB003448A5 /* BuddyTabView.swift in Sources */,
+				D37409ED2FB229AB003448A5 /* ProfileService.swift in Sources */,
+				D37409EE2FB229AB003448A5 /* BCColors.swift in Sources */,
+				D37409EF2FB229AB003448A5 /* ContentView.swift in Sources */,
+				D37409F02FB229AB003448A5 /* TaskFlow.swift in Sources */,
+				D37409F12FB229AB003448A5 /* CourseModuleView.swift in Sources */,
+				D37409F22FB229AB003448A5 /* WMOGuideView.swift in Sources */,
+				D37409F32FB229AB003448A5 /* OrganizationOnboardingFlow.swift in Sources */,
+				D37409F42FB229AB003448A5 /* Buddie_CareApp.swift in Sources */,
+				D37409F52FB229AB003448A5 /* ActivityTimelineView.swift in Sources */,
+				D37409F62FB229AB003448A5 /* AuthService.swift in Sources */,
+				D37409F72FB229AB003448A5 /* FamilyTabView.swift in Sources */,
+				D37409F82FB229AB003448A5 /* AppState.swift in Sources */,
+				D37409F92FB229AB003448A5 /* FamilyProfileView.swift in Sources */,
+				D37409FA2FB229AB003448A5 /* MockServices.swift in Sources */,
+				D37409FB2FB229AB003448A5 /* SplashView.swift in Sources */,
+				D37409FC2FB229AB003448A5 /* FamilyLinkingView.swift in Sources */,
+				D37409FD2FB229AB003448A5 /* ElderlyHomeView.swift in Sources */,
+				D37409FE2FB229AB003448A5 /* CourseContent.swift in Sources */,
+				D37409FF2FB229AB003448A5 /* MyBuddiesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,15 +526,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Buddy Care.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5QFB2FHYYQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Buddy Care gebruikt de camera voor de selfie-check en het scannen van de QR-code bij inchecken.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Buddy Care controleert of je op de juiste locatie bent bij het inchecken.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -295,15 +563,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Buddy Care.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5QFB2FHYYQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Buddy Care gebruikt de camera voor de selfie-check en het scannen van de QR-code bij inchecken.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Buddy Care controleert of je op de juiste locatie bent bij het inchecken.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

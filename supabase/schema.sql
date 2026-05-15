@@ -15,6 +15,7 @@ CREATE TYPE task_category    AS ENUM ('companionship','groceries','medication_re
 CREATE TYPE task_status      AS ENUM ('open','accepted','arrived','in_progress','completed','cancelled');
 CREATE TYPE task_timing_type AS ENUM ('now','today','scheduled');
 
+
 -- ============================================================
 -- PROFILES (basis voor alle gebruikers, gekoppeld aan auth.users)
 -- ============================================================
@@ -112,10 +113,17 @@ CREATE TABLE tasks (
     created_at           TIMESTAMPTZ DEFAULT NOW(),
     accepted_at          TIMESTAMPTZ,
     arrived_at           TIMESTAMPTZ,
+    check_in_selfie_url  TEXT,
     completed_at         TIMESTAMPTZ,
     completion_note      TEXT,
     buddy_eta_minutes    INTEGER
 );
+
+-- Storage bucket voor check-in selfies (aanmaken in Supabase dashboard)
+-- Bucket naam: check-in-selfies
+-- Toegang: private (alleen via service role of signed URLs)
+-- RLS policy: buddy kan alleen eigen selfies uploaden (path begint met taskId/buddyId_)
+-- Maximale bestandsgrootte: 2MB (JPEG gecomprimeerd op 0.75)
 
 -- ============================================================
 -- BEOORDELINGEN
