@@ -184,7 +184,7 @@ struct LoginView: View {
                 .font(BCTypography.captionEmphasized)
                 .foregroundStyle(BCColors.textSecondary)
 
-            ForEach(UserRole.allCases) { role in
+            ForEach(UserRole.allCases.filter { $0 != .admin }) { role in
                 Button {
                     selectedRole = role
                 } label: {
