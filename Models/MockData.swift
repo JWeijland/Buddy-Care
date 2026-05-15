@@ -2,14 +2,14 @@ import Foundation
 import CoreLocation
 
 enum MockData {
-    static let rotterdamCenter = CLLocationCoordinate2D(latitude: 51.9244, longitude: 4.4777)
+    static let amsterdamCenter = CLLocationCoordinate2D(latitude: 52.3676, longitude: 4.9041)
 
     static let omaRiet = ElderlyUser(
         id: UUID(),
         firstName: "Riet",
         lastName: "van der Berg",
-        address: "Aelbrechtskade 142, Rotterdam",
-        coordinate: CLLocationCoordinate2D(latitude: 51.9183, longitude: 4.4541),
+        address: "Elandsgracht 86, Amsterdam",
+        coordinate: CLLocationCoordinate2D(latitude: 52.3717, longitude: 4.8836),
         dateOfBirth: Calendar.current.date(from: DateComponents(year: 1948, month: 3, day: 12))!,
         phoneNumber: "06 12 34 56 78",
         allergies: ["Penicilline"],
@@ -23,8 +23,8 @@ enum MockData {
         id: UUID(),
         firstName: "Henk",
         lastName: "de Boer",
-        address: "Mathenesserlaan 88, Rotterdam",
-        coordinate: CLLocationCoordinate2D(latitude: 51.9131, longitude: 4.4538),
+        address: "Ferdinand Bolstraat 45, Amsterdam",
+        coordinate: CLLocationCoordinate2D(latitude: 52.3534, longitude: 4.8993),
         dateOfBirth: Calendar.current.date(from: DateComponents(year: 1940, month: 7, day: 4))!,
         phoneNumber: "06 98 76 54 32",
         allergies: [],
@@ -46,8 +46,8 @@ enum MockData {
         ],
         ratingAverage: 4.9,
         totalTasks: 47,
-        bio: "Hallo! Ik ben Aiyla, 21 jaar en HBO-V student in Rotterdam. Ik help graag met gezelschap en lichte zorgtaken.",
-        study: "HBO-V — jaar 2, Hogeschool Rotterdam",
+        bio: "Hallo! Ik ben Aiyla, 21 jaar en HBO-V student in Amsterdam. Ik help graag met gezelschap en lichte zorgtaken.",
+        study: "HBO-V — jaar 2, Hogeschool van Amsterdam",
         kycVerified: true,
         vogValid: true,
         vogExpiresAt: Date().addingTimeInterval(86400 * 365 * 3),
@@ -83,7 +83,7 @@ enum MockData {
         ratingAverage: 4.6,
         totalTasks: 8,
         bio: "Geneeskundestudent, hou van koffie drinken en kletsen.",
-        study: "Geneeskunde — jaar 1, Erasmus MC",
+        study: "Geneeskunde — jaar 1, Amsterdam UMC",
         kycVerified: true,
         vogValid: true,
         vogExpiresAt: Date().addingTimeInterval(86400 * 365 * 3),
@@ -106,8 +106,8 @@ enum MockData {
         ServiceTask(
             id: UUID(),
             elderlyName: "Riet",
-            elderlyAddress: "Aelbrechtskade 142",
-            coordinate: CLLocationCoordinate2D(latitude: 51.9183, longitude: 4.4541),
+            elderlyAddress: "Elandsgracht 86",
+            coordinate: CLLocationCoordinate2D(latitude: 52.3717, longitude: 4.8836),
             category: .companionship,
             requiredLevel: .zero,
             timing: .now,
@@ -122,8 +122,8 @@ enum MockData {
         ServiceTask(
             id: UUID(),
             elderlyName: "Henk",
-            elderlyAddress: "Mathenesserlaan 88",
-            coordinate: CLLocationCoordinate2D(latitude: 51.9131, longitude: 4.4538),
+            elderlyAddress: "Ferdinand Bolstraat 45",
+            coordinate: CLLocationCoordinate2D(latitude: 52.3534, longitude: 4.8993),
             category: .groceries,
             requiredLevel: .zero,
             timing: .today(hour: 16),
@@ -138,8 +138,8 @@ enum MockData {
         ServiceTask(
             id: UUID(),
             elderlyName: "Truus",
-            elderlyAddress: "Heemraadssingel 21",
-            coordinate: CLLocationCoordinate2D(latitude: 51.9139, longitude: 4.4499),
+            elderlyAddress: "Keizersgracht 210",
+            coordinate: CLLocationCoordinate2D(latitude: 52.3729, longitude: 4.8851),
             category: .mealPrep,
             requiredLevel: .one,
             timing: .today(hour: 18),
@@ -154,8 +154,8 @@ enum MockData {
         ServiceTask(
             id: UUID(),
             elderlyName: "Kees",
-            elderlyAddress: "Schiedamseweg 412",
-            coordinate: CLLocationCoordinate2D(latitude: 51.9072, longitude: 4.4338),
+            elderlyAddress: "Weesperzijde 112",
+            coordinate: CLLocationCoordinate2D(latitude: 52.3558, longitude: 4.9195),
             category: .walkOutdoors,
             requiredLevel: .zero,
             timing: .now,
@@ -170,8 +170,8 @@ enum MockData {
         ServiceTask(
             id: UUID(),
             elderlyName: "Beatrix",
-            elderlyAddress: "Vasteland 14",
-            coordinate: CLLocationCoordinate2D(latitude: 51.9099, longitude: 4.4823),
+            elderlyAddress: "Minervalaan 78",
+            coordinate: CLLocationCoordinate2D(latitude: 52.3453, longitude: 4.8732),
             category: .lightCleaning,
             requiredLevel: .zero,
             timing: .scheduled(date: Date().addingTimeInterval(86400)),
@@ -186,8 +186,8 @@ enum MockData {
         ServiceTask(
             id: UUID(),
             elderlyName: "Wim",
-            elderlyAddress: "Coolsingel 76",
-            coordinate: CLLocationCoordinate2D(latitude: 51.9217, longitude: 4.4794),
+            elderlyAddress: "Middenweg 44",
+            coordinate: CLLocationCoordinate2D(latitude: 52.3532, longitude: 4.9272),
             category: .medicationReminder,
             requiredLevel: .two,
             timing: .today(hour: 20),
@@ -206,8 +206,8 @@ enum MockData {
             var t = ServiceTask(
                 id: UUID(),
                 elderlyName: "Riet",
-                elderlyAddress: "Aelbrechtskade 142",
-                coordinate: CLLocationCoordinate2D(latitude: 51.9183, longitude: 4.4541),
+                elderlyAddress: "Elandsgracht 86",
+                coordinate: CLLocationCoordinate2D(latitude: 52.3717, longitude: 4.8836),
                 category: .companionship,
                 requiredLevel: .zero,
                 timing: .scheduled(date: Date().addingTimeInterval(-86400 * 2)),
@@ -227,8 +227,8 @@ enum MockData {
             var t = ServiceTask(
                 id: UUID(),
                 elderlyName: "Riet",
-                elderlyAddress: "Aelbrechtskade 142",
-                coordinate: CLLocationCoordinate2D(latitude: 51.9183, longitude: 4.4541),
+                elderlyAddress: "Elandsgracht 86",
+                coordinate: CLLocationCoordinate2D(latitude: 52.3717, longitude: 4.8836),
                 category: .groceries,
                 requiredLevel: .zero,
                 timing: .scheduled(date: Date().addingTimeInterval(-86400 * 5)),
@@ -248,8 +248,8 @@ enum MockData {
             var t = ServiceTask(
                 id: UUID(),
                 elderlyName: "Riet",
-                elderlyAddress: "Aelbrechtskade 142",
-                coordinate: CLLocationCoordinate2D(latitude: 51.9183, longitude: 4.4541),
+                elderlyAddress: "Elandsgracht 86",
+                coordinate: CLLocationCoordinate2D(latitude: 52.3717, longitude: 4.8836),
                 category: .walkOutdoors,
                 requiredLevel: .zero,
                 timing: .scheduled(date: Date().addingTimeInterval(-86400 * 9)),
@@ -262,7 +262,7 @@ enum MockData {
                 assignedBuddyEtaMinutes: 0
             )
             t.completedAt = Date().addingTimeInterval(-86400 * 9 + 2700)
-            t.completionNote = "Mooi weer, lekker gewandeld langs het Heemraadssingel."
+            t.completionNote = "Mooi weer, lekker gewandeld langs het Vondelpark."
             return t
         }()
     ]

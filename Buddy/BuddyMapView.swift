@@ -3,11 +3,11 @@ import MapKit
 
 struct BuddyMapView: View {
     @Environment(AppState.self) private var appState
-    @State private var cameraPosition: MapCameraPosition = .region(
-        MKCoordinateRegion(
-            center: MockData.rotterdamCenter,
+    @State private var cameraPosition: MapCameraPosition = .userLocation(
+        fallback: .region(MKCoordinateRegion(
+            center: MockData.amsterdamCenter,
             span: MKCoordinateSpan(latitudeDelta: 0.04, longitudeDelta: 0.04)
-        )
+        ))
     )
     @State private var selectedTask: ServiceTask? = nil
     @State private var maxLevelFilter: Int = 1
