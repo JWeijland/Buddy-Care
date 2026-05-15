@@ -229,10 +229,10 @@ CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
     -- role en namen worden meegegeven als metadata bij registratie
-    INSERT INTO profiles (id, role, first_name, last_name, phone_number)
+    INSERT INTO public.profiles (id, role, first_name, last_name, phone_number)
     VALUES (
         NEW.id,
-        (NEW.raw_user_meta_data->>'role')::user_role,
+        (NEW.raw_user_meta_data->>'role')::public.user_role,
         COALESCE(NEW.raw_user_meta_data->>'first_name', ''),
         COALESCE(NEW.raw_user_meta_data->>'last_name', ''),
         NEW.phone
@@ -240,16 +240,16 @@ BEGIN
 
     -- Maak rol-specifiek profiel aan
     IF (NEW.raw_user_meta_data->>'role') = 'elderly' THEN
-        INSERT INTO elderly_profiles (id) VALUES (NEW.id);
+        INSERT INTO public.elderly_profiles (id) VALUES (NEW.id);
     ELSIF (NEW.raw_user_meta_data->>'role') = 'buddy' THEN
-        INSERT INTO buddy_profiles (id) VALUES (NEW.id);
+        INSERT INTO public.buddy_profiles (id) VALUES (NEW.id);
     ELSIF (NEW.raw_user_meta_data->>'role') = 'family' THEN
-        INSERT INTO family_profiles (id) VALUES (NEW.id);
+        INSERT INTO public.family_profiles (id) VALUES (NEW.id);
     END IF;
 
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 CREATE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
@@ -301,9 +301,10 @@ ALTER TABLE course_progress       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE earnings              ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sos_events            ENABLE ROW LEVEL SECURITY;
 
--- Profiles: eigen profiel lezen en updaten
-CREATE POLICY "Eigen profiel lezen"   ON profiles FOR SELECT USING (auth.uid() = id);
-CREATE POLICY "Eigen profiel updaten" ON profiles FOR UPDATE USING (auth.uid() = id);
+-- Profiles: aanmaken (trigger), lezen en updaten
+CREATE POLICY "Trigger kan profielen aanmaken" ON profiles FOR INSERT WITH CHECK (true);
+CREATE POLICY "Eigen profiel lezen"            ON profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Eigen profiel updaten"          ON profiles FOR UPDATE USING (auth.uid() = id);
 
 -- Elderly profiles: eigen + gekoppelde familie kan lezen
 CREATE POLICY "Eigen elderly profiel" ON elderly_profiles FOR SELECT USING (auth.uid() = id);
