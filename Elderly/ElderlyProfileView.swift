@@ -87,7 +87,7 @@ struct ElderlyProfileView: View {
                         .padding(.horizontal, BCSpacing.lg)
                         .padding(.vertical, BCSpacing.md)
                         Divider()
-                        ProfileRow(icon: "phone.fill", label: "Telefoonnummer", value: appState.elderlyUser.phoneNumber)
+                        ProfileRow(icon: "phone.fill", label: "Telefoonnummer", value: appState.elderlyUser.phoneNumber ?? "")
                             .padding(.horizontal, BCSpacing.lg)
                         Divider()
                         ProfileRow(icon: "house.fill", label: "Adres", value: appState.elderlyUser.address)
@@ -256,7 +256,7 @@ struct EditProfileSheet: View {
             }
         }
         .onAppear {
-            phone = appState.elderlyUser.phoneNumber
+            phone = appState.elderlyUser.phoneNumber ?? ""
             address = appState.elderlyUser.address
             allergiesText = appState.elderlyUser.allergies.joined(separator: ", ")
             medication = appState.elderlyUser.medicationNotes
@@ -292,7 +292,7 @@ struct EditProfileSheet: View {
             .split(separator: ",")
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
-        appState.elderlyUser.phoneNumber = phone
+        appState.elderlyUser.phoneNumber = phone.isEmpty ? nil : phone
         appState.elderlyUser.address = address
         appState.elderlyUser.allergies = allergies
         appState.elderlyUser.medicationNotes = medication

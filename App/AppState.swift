@@ -284,7 +284,7 @@ final class AppState {
             etaMinutes: task.assignedBuddyEtaMinutes ?? 12
         ))
         MockSMSService().sendSMS(
-            to: elderlyUser.phoneNumber,
+            to: elderlyUser.phoneNumber ?? "",
             message: BuddieNotification.taskAccepted(buddyName: MockData.buddyAiyla.firstName, etaMinutes: task.assignedBuddyEtaMinutes ?? 12).title
         )
     }
@@ -313,7 +313,7 @@ final class AppState {
         }
         MockPushService().send(notification: .buddyArrived(buddyName: buddyUser.firstName))
         MockSMSService().sendSMS(
-            to: elderlyUser.phoneNumber,
+            to: elderlyUser.phoneNumber ?? "",
             message: BuddieNotification.buddyArrived(buddyName: buddyUser.firstName).title
         )
     }

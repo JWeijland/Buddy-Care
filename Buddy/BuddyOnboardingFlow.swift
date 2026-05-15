@@ -982,6 +982,21 @@ struct BuddyOnboardingFlow: View {
 
     private var bottomBar: some View {
         VStack(spacing: BCSpacing.xs) {
+            if step == 1 {
+                Button {
+                    firstName = "Demo"
+                    lastName = "Buddy"
+                    email = "demo@buddycare.nl"
+                    phone = "+31612345678"
+                    step += 1
+                } label: {
+                    Label("Demo: vul account in", systemImage: "play.fill")
+                        .font(BCTypography.caption)
+                        .foregroundStyle(BCColors.textTertiary)
+                }
+                .buttonStyle(.plain)
+            }
+
             if step == 5 {
                 Button {
                     isZzper = true

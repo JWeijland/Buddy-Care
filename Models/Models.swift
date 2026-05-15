@@ -310,7 +310,7 @@ struct ElderlyUser: Identifiable, Hashable {
     var address: String
     let coordinate: CLLocationCoordinate2D
     let dateOfBirth: Date
-    var phoneNumber: String
+    var phoneNumber: String?
     var allergies: [String]
     var medicationNotes: String
     var favoriteBuddyIDs: [UUID]
